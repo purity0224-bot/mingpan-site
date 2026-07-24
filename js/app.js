@@ -788,17 +788,17 @@
     // 移除互動元素（單檔為靜態快照）
     clone.querySelectorAll('.hypo .btns, #copy-prompt, #download-report').forEach((el) => el.remove());
     const name = d.input.name || `${d.input.y}${String(d.input.m).padStart(2, '0')}${String(d.input.d).padStart(2, '0')}`;
-    const title = `Marss｜命盤織錦報告｜${name}`;
+    const title = `Marss｜問命織盤所報告｜${name}`;
     const html = `<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${CH.esc(title)}</title><style>${css}</style></head><body>
-<header class="site"><h1>Marss｜命盤織錦</h1><p class="sub">多系統命理交叉分析・靜態快照（產生於 ${new Date().toLocaleDateString('zh-TW')}）</p></header>
+<header class="site"><h1>Marss｜問命織盤所</h1><p class="sub">多系統命理交叉分析・靜態快照（產生於 ${new Date().toLocaleDateString('zh-TW')}）</p></header>
 <main>${clone.innerHTML}</main>
-<footer>Marss｜命盤織錦・排盤採天文曆算（角分級精度）・象徵系統交叉閱讀，非實證預測</footer>
+<footer>Marss｜問命織盤所・排盤採天文曆算（角分級精度）・象徵系統交叉閱讀，非實證預測</footer>
 <script>document.querySelectorAll('.tabs button').forEach(function(t){t.addEventListener('click',function(){var tabs=t.closest('.tabs').querySelectorAll('button');tabs.forEach(function(x){x.classList.remove('active')});t.classList.add('active');var sec=t.closest('section');sec.querySelectorAll('.tab-pane').forEach(function(p){p.classList.toggle('active',p.dataset.pane===t.dataset.tab)})})});<\/script>
 </body></html>`;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `Marss｜命盤織錦-${name}.html`;
+    a.download = `Marss｜問命織盤所-${name}.html`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     $('#copy-status').textContent = '已下載單檔報告——可離線開啟、直接轉傳。';
