@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://marss.goatcounter.com https://gc.zgo.at; upgrade-insecure-requests">
+<title>Marss｜命盤織錦</title>
+<meta name="description" content="八字・紫微斗數・西洋占星・印度占星・人類圖・生命靈數等多系統交叉分析：天文曆算精確排盤，找匯流、攤矛盾、可證偽。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+</head>
+<body>
+<canvas id="stars" class="starfield" aria-hidden="true"></canvas>
+
+<div class="hero" aria-hidden="true">
+  <img src="assets/banner.jpg" alt="" width="1376" height="768" fetchpriority="high">
+</div>
+
+<header class="site">
+  <h1>Marss｜命盤織錦</h1>
+  <p class="sub">八字・紫微・西占・印占・人類圖・靈數——六大系統交叉分析，天文曆算精確排盤。</p>
+  <p class="ver">先算後論 ❖ 交叉不並列 ❖ 反巴納姆</p>
+</header>
+
+<main>
+  <section class="panel" id="input-panel">
+    <h2><span class="no">起</span>輸入出生資料</h2>
+    <p class="desc">時間精度決定一切：差 10 分鐘可能改變上升星座、紫微命宮與人類圖類型（系統會自動做敏感度檢查）。資料只在你的瀏覽器內計算，不上傳任何伺服器。</p>
+    <div class="form-journey" aria-label="排盤流程">
+      <span><b>01</b>輸入出生資料</span><i aria-hidden="true"></i>
+      <span><b>02</b>天文曆算排盤</span><i aria-hidden="true"></i>
+      <span><b>03</b>交叉閱讀報告</span>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label for="pname">姓名／代稱（選填）</label><input id="pname" type="text" placeholder="例：小星"></div>
+      <div class="field"><label for="bdate">出生日期（陽曆）</label><input id="bdate" type="date" min="1900-01-01" max="2100-12-31"></div>
+      <div class="field" id="precise-time-field"><label for="bhh">出生時間（24 小時制）</label>
+        <div class="time-pair">
+          <input id="bhh" type="number" min="0" max="23" placeholder="時 0–23" inputmode="numeric">
+          <span class="time-colon">：</span>
+          <input id="bmm" type="number" min="0" max="59" placeholder="分 0–59" inputmode="numeric">
+        </div>
+      </div>
+      <div class="field"><label for="city">出生區域</label><select id="city"><option value="">請選擇出生區域…</option></select></div>
+      <div class="field geo-field hidden"><label for="tz">時區（UTC 偏移）</label><input id="tz" type="number" step="0.5" value="8"></div>
+      <div class="field geo-field hidden"><label for="lat">緯度（北正南負）</label><input id="lat" type="number" step="0.01" value="25.04"></div>
+      <div class="field geo-field hidden"><label for="lon">經度（東正西負）</label><input id="lon" type="number" step="0.01" value="121.56"></div>
+    </div>
+    <fieldset class="time-precision">
+      <legend>出生時間精度</legend>
+      <label><input type="radio" name="time-precision" value="exact" checked>我知道出生時間</label>
+      <label><input type="radio" name="time-precision" value="range">出生時間不確定，以區間分析</label>
+    </fieldset>
+    <div class="time-range-panel hidden" id="time-range-panel" role="group" aria-labelledby="time-range-title">
+      <div><strong id="time-range-title">可能的出生時段</strong><p>系統會以區間中點產出完整報告，並每 5 分鐘比對一次時柱、命宮、上升與人類圖，將可能變動的結果獨立列出。</p></div>
+      <div class="time-range-inputs">
+        <label for="time-start">開始時間<input id="time-start" type="time" value="08:00" step="60"></label>
+        <span aria-hidden="true">至</span>
+        <label for="time-end">結束時間<input id="time-end" type="time" value="10:00" step="60"></label>
+      </div>
+      <p class="form-note">限同一天內的時段；不確定跨日或只知道早／午／晚時，請先選擇你最有把握的範圍。</p>
+    </div>
+    <div class="opts">
+      <label><input type="radio" name="sex" value="male" checked>生理男</label>
+      <label><input type="radio" name="sex" value="female">生理女</label>
+    </div>
+    <div class="actions">
+      <button class="primary" id="run">織 盤</button>
+      <button class="ghost" id="save-profile">存檔此人</button>
+      <button class="ghost" id="share-link">複製分享連結</button>
+      <button class="ghost" id="download-report">下載單檔報告</button>
+    </div>
+    <div class="profiles" id="profiles"></div>
+    <p class="form-note">性別欄影響八字大運與紫微大限的順逆排法。生理性別與性別認同無關，僅為古典排盤參數。</p>
+    <details class="privacy-settings">
+      <summary><span>隱私與資料設定</span><small>你的出生資料不會送到本站伺服器</small></summary>
+      <div class="privacy-content">
+        <p>「存檔此人」只會把資料存到這台裝置的瀏覽器；分享完整盤面與下載單檔報告都可能包含出生資料，請僅傳給信任的對象。</p>
+        <div class="privacy-actions">
+          <button class="ghost" id="clear-local-data" type="button">清除本機存檔</button>
+        </div>
+        <p class="form-note">本站僅使用匿名瀏覽統計（GoatCounter，不含個資、不追蹤個人），用於了解造訪量；不使用廣告追蹤器或第三方登入。</p>
+      </div>
+    </details>
+    <div id="sens-inline" class="hidden"></div>
+  </section>
+
+  <div id="report" class="hidden" aria-live="polite" aria-busy="false" tabindex="-1"></div>
+</main>
+
+<dialog class="privacy-dialog" id="share-dialog" aria-labelledby="share-dialog-title">
+  <form method="dialog">
+    <p class="dialog-kicker">資料分享</p>
+    <h2 id="share-dialog-title">選擇要分享的範圍</h2>
+    <p>出生日期、時間、地點、性別與姓名都屬於個人資料。完整連結把資料放在網址的 <code>#</code> 後方，不會隨一般網頁請求送到伺服器，但持有連結的人仍可讀取資料。</p>
+    <div class="dialog-actions">
+      <button class="ghost" id="share-site-only" type="button">只複製網站連結</button>
+      <button class="primary" id="share-with-data" type="button">我了解，分享完整盤面</button>
+    </div>
+    <p class="form-note" id="share-status" role="status"></p>
+    <button class="dialog-close" value="cancel">取消</button>
+  </form>
+</dialog>
+
+<footer>
+  Marss｜命盤織錦・多系統命理交叉分析｜排盤採 astronomy-engine 天文曆算（角分級精度）｜象徵系統交叉閱讀，非實證預測<br>
+  流派敏感處均已於各節標注；雷達計分規則全部揭露，歡迎覆核。
+</footer>
+
+<script src="js/astronomy.min.js"></script>
+<script src="js/engine-core.js"></script>
+<script src="js/engine-bazi.js"></script>
+<script src="js/engine-west.js"></script>
+<script src="js/engine-vedic.js"></script>
+<script src="js/engine-hd.js"></script>
+<script src="js/engine-ziwei.js"></script>
+<script src="js/engine-misc.js"></script>
+<script src="js/report.js"></script>
+<script src="js/deep.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
