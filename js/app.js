@@ -269,6 +269,9 @@
       renderEpistemic(),
     ].join('');
     $('#report').innerHTML = html;
+    // 排盤完成後顯示懸浮 LINE 導流按鈕
+    const fab = $('#line-fab');
+    if (fab) fab.classList.remove('hidden');
     // 時間層色塊：點擊顯示說明（iOS 無 hover，長按會觸發文字選取，改用點擊）
     document.querySelectorAll('.tl-span').forEach((r) => r.addEventListener('click', () => {
       const box = r.closest('figure').querySelector('.tl-detail');
@@ -356,14 +359,21 @@
     return `<nav class="toc" aria-label="報告章節">${items.map(([id, t]) => `<a href="#${id}">${t}</a>`).join('')}</nav>`;
   }
 
+  /* --- LINE 導流共用 --- */
+  const LINE_URL = 'https://line.me/R/ti/p/@989vkcos';
+  function ctaLine(text) {
+    return `<p class="cta-inline"><a href="${LINE_URL}" target="_blank" rel="noopener">${text} →</a></p>`;
+  }
+
   /* --- AI 深度提問（匯出提示詞） --- */
   function renderAIPrompt(d) {
     const prompt = ML.report.exportPrompt(d);
-    const b = `<p class="probe-plain">這份報告的所有結論都是規則式生成——想追問更深、更個人化的問題（「以我的盤，適不適合明年創業？」「我跟某某人的相處要注意什麼？」），把下面的<strong>完整盤面提示詞</strong>複製給任何 AI（ChatGPT、Claude、Gemini 都可以）。它包含你已精算好的全部盤面數據與分析方法論——AI 不必重新排盤、也不會亂編度數，直接站在這份報告的肩膀上往深處答。</p>
+    const b = `<p class="probe-plain">想深入追問，最省事的路是 <a href="${LINE_URL}" target="_blank" rel="noopener"><strong>LINE 問命織盤所</strong></a>——盤面自動帶入、命理老師人設調校好、回答附你的專屬盤面圖，一題 9 元。下面的工具留給想自己動手的進階玩家：</p>
+    <p class="probe-plain">把<strong>完整盤面提示詞</strong>複製給任何 AI（ChatGPT、Claude、Gemini 都可以）。它包含你已精算好的全部盤面數據與分析方法論——AI 不必重新排盤、也不會亂編度數，直接站在這份報告的肩膀上往深處答。</p>
     <div class="ai-actions"><button class="ghost" id="copy-ai-btn">一鍵複製提示詞</button><span id="ai-copy-status" class="form-note"></span></div>
     <textarea id="ai-prompt-text" readonly rows="9" aria-label="AI 深度解讀提示詞">${esc(prompt)}</textarea>
     <p class="chart-note">用法：複製 → 貼到 AI 對話框送出 → 接著問你想問的任何問題（感情、事業、某一年怎麼走……）。提示詞已內建「交叉不並列、禁止巴納姆空話、逐句標來源、區分本質與流年」等規則，回答品質會比直接丟一句「幫我算命」好非常多。</p>`;
-    return panel('sec-ai', '陸', 'AI 深度提問', '把精算盤面＋分析方法論打包成一段提示詞——複製給任何 AI，做報告之外的深層個人化問答。', b, true);
+    return panel('sec-ai', '陸', 'AI 深度提問（進階 DIY）', '想自己拿盤面數據去問其他 AI 的進階玩家再點開；一般使用者直接用 LINE 深入問答最省事。', b, true);
   }
 
   /* --- 總結與建議（白話統整） --- */
@@ -399,7 +409,7 @@
     <div class="horizon"><span class="hz-tag">長期｜十年以上</span><ul>${s.horizons.long.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div></div>`;
     b += `<div class="summary-block"><h4>各領域建議</h4><ul>${s.domains.map((dm) => `<li><strong>${esc(dm.name)}</strong>｜${esc(dm.text)}<div class="chart-note">依據：${esc(dm.src)}</div></li>`).join('')}</ul></div>`;
     b += `<p class="chart-note">這一區是整份報告的摘要，每條結論都標了出處，細節和證據在後面各章。未來走勢是抓節奏用的粗篩，別當判決書。</p>`;
-    return panel('sec-summary', '壹', '總結與建議', '六套系統交叉之後，指向最一致的結論都在這裡——先看這區就夠。', b);
+    return panel('sec-summary', '壹', '總結與建議', '六套系統交叉之後，指向最一致的結論都在這裡——先看這區就夠。', b + ctaLine('看完想針對你的狀況追問？LINE 一題 9 元深入問'));
   }
 
   /* --- 行動手冊 --- */
@@ -476,7 +486,7 @@
     }
     b += `<p class="chart-note">「適合／避免」清單由該年的燈號決定（同燈號原則相同），各年的個人化差異（太歲、化祿化忌落點、行星回歸）寫在備註列。</p>`;
     b += `<p class="chart-note">本手冊全部由你的盤面規則式生成（喜用五行、人類圖類型與權威、宮位強度、流年表），不是通用模板；「產業方向」「方位」屬加成參考而非限制。時機類建議為粗篩參考，重大決策仍請綜合實際條件判斷。</p>`;
-    return panel('sec-action', '壹', '行動手冊', '你的強項怎麼用、各領域怎麼走——全部由你的盤面規則式生成。', b);
+    return panel('sec-action', '壹', '行動手冊', '你的強項怎麼用、各領域怎麼走——全部由你的盤面規則式生成。', b + ctaLine('感情、事業想問得更細？到 LINE 跟老師聊'));
   }
 
   /* --- 時間敏感度 --- */
@@ -735,14 +745,14 @@
   function renderCTA(d) {
     const services = [
       ['💬', '單題深度問答', '任何問題，AI 命理老師依你的盤即時分析', '9 元/題起'],
-      ['📜', '流年運勢詳批', '未來三年逐年批注＋關鍵月份', '5 題'],
+      ['📜', '流年運勢詳批', '未來五年逐年批注＋關鍵月份', '4 題'],
       ['❤️', '桃花運專批', '感情模式・對象輪廓・桃花窗口', '5 題'],
-      ['💼', '事業選擇建議', '產業方向・創業適性・三年節奏', '5 題'],
+      ['💼', '事業選擇建議', '產業方向・創業適性・未來節奏', '5 題'],
       ['💞', '合盤配對分析', '兩人盤面交叉：引力、摩擦、經營', '8 題'],
       ['📅', '擇日選時', '程式精算吉日＋建議時辰', '4 題'],
       ['📝', '姓名學鑑定', '名字五行是否補到你的喜用神', '3 題'],
     ];
-    let b = `<p class="desc">這份免費報告是你的「說明書」；想針對自己的狀況追問——換工作時機、這段感情、這個決定——到 LINE 上跟 AI 命理老師一題一題深入聊。你的盤面會自動帶入，回答附專屬盤面圖表。</p>`;
+    let b = `<p class="desc">這份免費報告是你的「說明書」；想針對自己的狀況追問——換工作時機、這段感情、這個決定——到 LINE 上跟 AI 命理老師一題一題深入聊。你的盤面會自動帶入，回答附專屬盤面圖表。一題 9 元起、買多最低 5 元/題，不到一杯飲料就能問個透徹。</p>`;
     b += `<div class="cta-services">${services.map(([ic, name, desc, price]) => `<div class="cta-item"><span class="cta-ic">${ic}</span><div class="cta-body"><strong>${name}</strong><span class="cta-desc">${desc}</span></div><span class="cta-price">${price}</span></div>`).join('')}</div>`;
     b += `<div class="cta-btn-wrap"><a class="cta-line-btn" href="https://line.me/R/ti/p/@989vkcos" target="_blank" rel="noopener">加 LINE 開始深入問 →</a><p class="chart-note" style="text-align:center;margin-top:10px">LINE 搜尋 @989vkcos｜綁定出生資料一次，之後隨問隨答</p></div>`;
     return panel('sec-cta', '參', '深入問答：問命織盤所', '', b);
@@ -757,7 +767,8 @@
     <div class="tbl-wrap"><table><thead><tr><th>窗口</th><th>同時換段的系統</th><th>細節</th></tr></thead><tbody>
       ${tl.windows.filter((w) => w.year <= d.input.y + 92).map((w) => `<tr><td><strong>${w.year} 前後</strong>（${w.year - d.input.y}歲）</td><td>${w.systems.join('＋')}</td><td>${esc(w.detail)}</td></tr>`).join('')}
     </tbody></table></div>`;
-    b += `<p class="chart-note">換軌窗口為粗篩參考，重大決策仍請綜合實際條件判斷。想看逐年的進攻／防守紅綠燈與詳細批注，可到下方「深入問答」用 LINE 取得流年詳批。</p>`;
+    b += `<p class="chart-note">換軌窗口為粗篩參考，重大決策仍請綜合實際條件判斷。</p>`;
+    b += ctaLine('想要未來五年逐年詳批（含關鍵月份）？LINE 取得流年詳批');
     return panel('sec-time', '貳', '時間層：三波對齊', '八字大運＋紫微大限＋印占 Vimshottari 三條長波對齊；同時換段處＝換軌窗口。', b);
   }
 
