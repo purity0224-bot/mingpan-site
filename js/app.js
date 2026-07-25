@@ -852,15 +852,10 @@
   /* --- 時間層 --- */
   function renderTimeline(d) {
     const tl = ML.report.timeline(d);
-    let b = `<figure class="chart">${CH.timelineChart(tl, d.input.y)}</figure>`;
-    b += '<h3>換軌窗口</h3>';
-    b += `<p class="probe-plain">白話：上圖三套系統各自把人生切成約十年一段的「章節」。當兩套以上在同一兩年內<strong>同時翻章</strong>，就像多條列車同時進站——人生出現明顯轉折（換工作、搬家、關係聚散、身分轉變）的機率特別高。下表是你的「同時翻章」年份，重大轉向放在這附近通常最順：</p>
-    <div class="tbl-wrap"><table><thead><tr><th>窗口</th><th>同時換段的系統</th><th>細節</th></tr></thead><tbody>
-      ${tl.windows.filter((w) => w.year <= d.input.y + 92).map((w) => `<tr><td><strong>${w.year} 前後</strong>（${w.year - d.input.y}歲）</td><td>${w.systems.join('＋')}</td><td>${esc(w.detail)}</td></tr>`).join('')}
-    </tbody></table></div>`;
-    b += `<p class="chart-note">換軌窗口為粗篩參考，重大決策仍請綜合實際條件判斷。</p>`;
+    let b = `<p class="probe-plain">三套系統各自把人生切成約十年一段的「章節」，下圖是你的三條時間軸並排對照——色塊交界就是該系統「翻章」的年份，點一下色塊可看那一段的說明。</p>`;
+    b += `<figure class="chart">${CH.timelineChart(tl, d.input.y)}</figure>`;
     b += ctaLine('想要未來五年逐年詳批（含關鍵月份）？LINE 取得流年詳批');
-    return panel('sec-time', '貳', '時間層：三波對齊', '八字大運＋紫微大限＋印占 Vimshottari 三條長波對齊；同時換段處＝換軌窗口。', b);
+    return panel('sec-time', '貳', '時間層：三波對齊', '三套系統的人生長波並排對照——看你現在走到哪一章、下一章何時開始。', b);
   }
 
 
