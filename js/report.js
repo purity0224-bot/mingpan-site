@@ -759,6 +759,7 @@
       const rate = BASE_RATE[p.dim] || 25;
       return {
         dim: p.dim, stars: p.stars, systems: p.systems, top: i === 0,
+        n: p.n, rate,
         rarity: `每 100 人約 ${rate} 人有此匯流（${rareLabel(rate)}）`,
         ...SKILL_CARDS[p.dim],
       };

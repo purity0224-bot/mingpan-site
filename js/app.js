@@ -267,6 +267,7 @@
     const html = [
       renderTimeUncertainty(d),
       renderNav(),
+      renderToday(d),
       renderActionManual(d),
       renderTimeline(d),
       renderCTA(d),
@@ -416,6 +417,59 @@
   }
 
   /* --- 行動手冊 --- */
+  /* --- A1：用法卡的白話盤面證據（維度 × 系統 → 一句看得懂的「為什麼是你」） --- */
+  const PLAIN_EV = {
+    '表達與傳播': { 八字: '八字裡代表「表達輸出」的食傷特別旺', 西占: '掌管溝通的水星配置突出', 人類圖: '人類圖的喉嚨（表達）中心通道多，話語自帶出口', 紫微: '紫微命宮坐著會說話的星（巨門、天機或文昌文曲）', 印占: '印度占星的水星有力', 靈數: '生命靈數走表達路線' },
+    '行動力與衝勁': { 八字: '八字火氣足、同伴星有力——行動派的組合', 西占: '火星位置搶眼，點火就走', 人類圖: '人類圖屬「先發型」結構，不用等人開口', 紫微: '紫微命宮或身宮帶衝鋒型星組（殺破狼）', 印占: '印度占星的火星有力', 靈數: '生命靈數是開創數' },
+    '情感深度與感受力': { 八字: '八字水多——水主情感與滲透力', 西占: '水象能量重、月亮落在感受深的位置', 人類圖: '人類圖的情緒中心通道多，情緒水位天生深', 紫微: '紫微命宮或福德宮坐感受型的星（太陰、天同）', 印占: '印度占星的月亮落在深水區', 靈數: '生命靈數是感受數' },
+    '秩序、結構與控制': { 八字: '八字裡代表「規矩與責任」的官殺有力', 西占: '土象能量重或土星緊扣日月，自帶框架感', 人類圖: '人類圖有邏輯迴路通道，天生愛把事情系統化', 紫微: '紫微命宮坐管理型的星（天相、天梁、武曲、紫微）', 印占: '印度占星的土星有力', 靈數: '生命靈數是務實數' },
+    '直覺與非線性認知': { 八字: '八字帶偏印或華蓋——傳統上主直覺與獨思', 西占: '海王星／冥王星緊扣日月，訊息常從「感覺」進來', 人類圖: '人類圖直覺中心有定義且直覺閘門啟動', 紫微: '紫微命宮帶心思細、感應快的星（天機、太陰）', 印占: '印度占星的月宿走直覺業力線', 靈數: '生命靈數是靈性數' },
+    '領導與舞台': { 八字: '八字帶「扛責＋帶人」的組合（官殺比劫並旺或將星魁罡）', 西占: '太陽站在舞台位（第 1／10 宮或獅子座）', 人類圖: '人類圖帶領導型通道或 5 號人生角色——天生被推上台', 紫微: '紫微命宮坐帝王將領星（紫微、太陽、七殺）', 印占: '印度占星的太陽廟旺有力', 靈數: '生命靈數是領袖數' },
+    '財務嗅覺與資源運籌': { 八字: '八字財星有力（連藏在地支裡的都算進去）', 西占: '財帛宮位有星進駐或金星木星互扣', 人類圖: '人類圖帶金錢線等物質迴路配置', 紫微: '紫微命宮坐理財星（武曲、天府、太陰）或財帛宮強', 印占: '印度占星的財富星（金星／木星）有力', 靈數: '生命靈數是財富數' },
+    '研究、深度與洞察': { 八字: '八字裡代表「吸收與鑽研」的印星旺', 西占: '星群聚在深度宮位或水星土星相扣——想得深', 人類圖: '人類圖帶深度迴路通道，能往一題鑽到底', 紫微: '紫微命宮坐軍師星（天機、天梁）或帶文昌文曲', 印占: '印度占星的智慧星（木星）有力', 靈數: '生命靈數是研究數' },
+    '人群魅力與桃花': { 八字: '八字帶桃花星', 西占: '金星站在吸睛位（第 1／10 宮或天秤、金牛）', 人類圖: '人類圖帶魅力型通道', 紫微: '紫微命宮坐魅力星（貪狼、太陰、天同）或紅鸞天喜到位', 印占: '印度占星的金星有力', 靈數: '生命靈數是人緣數' },
+    '遷移、變動與自由': { 八字: '八字帶驛馬星——傳統的「移動命」標記', 西占: '變動能量占比高或星聚遠行宮', 人類圖: '人類圖帶變動迴路通道', 紫微: '紫微遷移宮強或帶天馬星', 印占: '印度占星的變動軸（羅睺）落在遠行位', 靈數: '生命靈數是自由數' },
+    '批判眼與完美主義': { 八字: '八字「挑錯眼」（食傷）與「高標準」（官殺）並旺', 西占: '處女座配置或日月水被土星緊扣——自我要求緊', 人類圖: '人類圖帶批判閘門 18／58，天生看得到「哪裡不對」', 紫微: '紫微命宮坐糾察型的星（天相、巨門、天梁）', 印占: '印度占星的月亮落處女或水星土星並強', 靈數: '生命靈數是完美數' },
+    '美感與藝術頻道': { 八字: '八字表達星旺又帶桃花或華蓋（輸出＋美感的標記）', 西占: '金星落在美感星座或與海王星相扣', 人類圖: '人類圖帶創作型通道或藝術閘門', 紫微: '紫微命宮坐藝文星或帶文昌文曲', 印占: '印度占星的金星有力', 靈數: '生命靈數是美感數' },
+  };
+  function whyYou(c) {
+    const m = PLAIN_EV[c.dim] || {};
+    const parts = c.systems.map((s) => m[s]).filter(Boolean);
+    if (!parts.length) return '';
+    return `<div class="fld evd"><span class="fld-tag why">為什麼是你</span><ul class="evd-list">${parts.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div>`;
+  }
+
+  /* --- B1：今日的你（每日回訪鉤子——今天干支對照本人日支／年支／喜用） --- */
+  function renderToday(d) {
+    const Cc = ML.core;
+    const B = d.bazi;
+    const now = new Date();
+    const gz = Cc.ganzhi(Cc.jdnFromCivil(now.getFullYear(), now.getMonth() + 1, now.getDate()) - Cc.jdnFromCivil(1949, 10, 1));
+    const HE6 = { 0: 1, 1: 0, 2: 11, 11: 2, 3: 10, 10: 3, 4: 9, 9: 4, 5: 8, 8: 5, 6: 7, 7: 6 };
+    const dayB = B.pillars.day.branchIdx, yearB = B.pillars.year.branchIdx;
+    const favHit = [Cc.STEM_ELEM[gz.stemIdx], Cc.BRANCH_ELEM[gz.branchIdx]].filter((e, i, a) => B.favorable.includes(e) && a.indexOf(e) === i);
+    let tone, icon, msg;
+    if ((gz.branchIdx + 6) % 12 === dayB) {
+      tone = 'low'; icon = '🌊';
+      msg = '今天的地支正沖你的日支——情緒和節奏容易被打亂的一天。重大決定、簽約、告白先緩一緩，拿來收尾整理最順。';
+    } else if ((gz.branchIdx + 6) % 12 === yearB) {
+      tone = 'low'; icon = '🍃';
+      msg = '今天的地支沖你的年支——外部環境變數偏多的一天，行程多留緩衝、別硬碰硬。';
+    } else if (HE6[gz.branchIdx] === dayB) {
+      tone = 'good'; icon = '🤝';
+      msg = '今天的地支跟你的日支「六合」——人與事都容易對上頻。適合談合作、約重要的人、開口提需求。';
+    } else if (favHit.length) {
+      tone = 'good'; icon = '☀️';
+      msg = `今天是你的喜用「${favHit.join('、')}」日——環境順風，推進度、做決定、開新局都有加成。`;
+    } else {
+      tone = 'mid'; icon = '🌤';
+      msg = '今天跟你的盤沒有明顯沖合——平盤日，按自己的節奏走就好，適合做累積型的事。';
+    }
+    return `<section class="panel today-card t-${tone}" id="sec-today"><h2><span class="no">日</span>今日的你</h2>
+      <p class="today-line">${icon}<strong>${now.getMonth() + 1}/${now.getDate()}・${gz.name}日</strong>${esc(msg)}</p>
+      <p class="chart-note">依你的八字日支、年支與喜用五行，和「今天的干支」即時對照——每天都不一樣，明天再回來看 👋</p></section>`;
+  }
+
   function renderActionManual(d) {
     const bt = d.input.timePrecision === 'range' ? `時間區間 ${formatTime(d.input.timeRange.start)}–${formatTime(d.input.timeRange.end)}` : `${pad2(d.input.hh)}:${pad2(d.input.mm)}`;
     const a = ML.report.actionPlan(d);
@@ -424,12 +478,14 @@
     b += `<h3>強項用法卡——你的多系統匯流特質</h3>
     <div class="amanual">`;
     for (const c of a.cards) {
-      b += `<div class="acard${c.top ? ' acard-top' : ''}">${c.top ? '<div class="top-badge">你最突出的特質</div>' : ''}<h4><span class="stars">${c.stars}</span> ${esc(c.dim)}</h4>
+      const pct = c.n >= 3 ? `<span class="pct-chip">300 盤樣本・約前 ${c.rate}%</span>` : '';
+      b += `<div class="acard${c.top ? ' acard-top' : ''}">${c.top ? '<div class="top-badge">你最突出的特質</div>' : ''}<h4><span class="stars">${c.stars}</span> ${esc(c.dim)}${pct}</h4>
+        ${whyYou(c)}
         <div class="fld"><span class="fld-tag">適合走</span>${esc(c.roles)}</div>
         <div class="fld"><span class="fld-tag">合作時</span>${esc(c.collab)}</div>
         <div class="fld"><span class="fld-tag warn">小心</span>${esc(c.misuse)}</div>
         <div class="fld"><span class="fld-tag go">這個月</span>${esc(c.step)}</div>
-        <div class="src-note">依據：${c.systems.join('、')} 匯流｜稀有度：${esc(c.rarity)}</div></div>`;
+        <div class="src-note">依據：${c.systems.join('、')} 匯流${c.n >= 3 ? `（300 盤隨機樣本中僅約 ${c.rate}% 出現此強度）` : `｜稀有度：${esc(c.rarity)}`}</div></div>`;
     }
     b += `</div>`;
     // 事業拼圖

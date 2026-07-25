@@ -861,3 +861,25 @@ details.panel[open] > summary .desc { margin-bottom: 16px; }
 }
 .line-fab:hover { filter: brightness(1.06); }
 @media (max-width: 480px) { .line-fab { right: 12px; bottom: 14px; font-size: .88rem; padding: 10px 14px; } }
+
+/* ---------- 今日的你（B1 每日回訪卡） ---------- */
+.today-card { border-left: 4px solid var(--line); }
+.today-card.t-good { border-left-color: #4C9A5F; }
+.today-card.t-low { border-left-color: #C08A3E; }
+.today-card.t-mid { border-left-color: #8B82A8; }
+.today-line { font-size: .96rem; line-height: 1.75; margin: 4px 0 8px; }
+.today-line strong { margin: 0 8px 0 6px; color: #55489E; }
+
+/* ---------- 用法卡：為什麼是你（A1）＋百分位（A2） ---------- */
+.pct-chip {
+  display: inline-block; margin-left: 8px; vertical-align: 2px;
+  font-size: .72rem; font-weight: 700; color: #7A5A12;
+  background: linear-gradient(120deg, #F7EBC9, #EFD98F);
+  border: 1px solid rgba(143, 106, 30, .45); border-radius: 999px; padding: 2px 9px;
+  letter-spacing: .03em;
+}
+.evd { background: rgba(107, 91, 200, .05); border-radius: 8px; padding: 7px 9px; }
+.fld-tag.why { color: #55489E; border-color: rgba(107, 91, 200, .45); }
+.evd-list { list-style: none; margin: 2px 0 0; padding: 0; }
+.evd-list li { font-size: .86rem; line-height: 1.65; padding-left: 16px; position: relative; }
+.evd-list li::before { content: "✦"; position: absolute; left: 2px; color: var(--gold-deep); font-size: .7rem; top: 4px; }
