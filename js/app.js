@@ -362,11 +362,11 @@
     const description = u.variable.length
       ? '請先以「保持一致」的項目閱讀報告；變動項目應視為多種可能，而非單一結論。'
       : '在本次檢視的時間敏感項目中，未發現變動；完整報告仍以區間中點為代表盤。';
-    return `<section class="panel time-confidence" id="sec-time-confidence"><h2><span class="no">準</span>出生時間區間檢視</h2><p class="desc">你提供 ${formatTime(u.start)}–${formatTime(u.end)}；完整報告以中點 ${formatTime(u.midpoint)} 為代表盤，另以每 ${u.interval} 分鐘掃描 ${u.sampleCount} 個時間點。</p><div class="uncertainty-overview"><span class="uncertainty-seal">區間</span><p>${description}</p></div><div class="uncertainty-grid">${stable}${variable}</div><p class="form-note">此功能比對八字時柱、紫微命／身宮、西占上升／天頂與人類圖核心設定；它呈現時間敏感度，不會把區間分析視為精確出生時刻。</p></section>`;
+    return `<section class="panel time-confidence" id="sec-time-confidence"><h2>出生時間區間檢視</h2><p class="desc">你提供 ${formatTime(u.start)}–${formatTime(u.end)}；完整報告以中點 ${formatTime(u.midpoint)} 為代表盤，另以每 ${u.interval} 分鐘掃描 ${u.sampleCount} 個時間點。</p><div class="uncertainty-overview"><span class="uncertainty-seal">區間</span><p>${description}</p></div><div class="uncertainty-grid">${stable}${variable}</div><p class="form-note">此功能比對八字時柱、紫微命／身宮、西占上升／天頂與人類圖核心設定；它呈現時間敏感度，不會把區間分析視為精確出生時刻。</p></section>`;
   }
 
   function panel(id, no, title, desc, body, collapsed) {
-    const seal = no ? `<span class="no">${no}</span>` : '';
+    const seal = ''; // 章節印章框已依用戶要求移除（no 參數保留相容舊呼叫）
     if (collapsed) {
       return `<details class="panel" id="${id}"><summary><h2>${seal}${title}<span class="fold-hint">點開</span></h2>${desc ? `<p class="desc">${desc}</p>` : ''}</summary>${body}</details>`;
     }
@@ -375,7 +375,7 @@
 
   function renderNav() {
     const items = [
-      ['sec-charts', '盤面圖卡'], ['sec-action', '行動手冊'], ['sec-time', '時間層'], ['sec-cta', '深入問答'],
+      ['sec-today', '今日的你'], ['sec-charts', '盤面圖卡'], ['sec-action', '行動手冊'], ['sec-time', '時間層'], ['sec-cta', '深入問答'],
     ];
     return `<nav class="toc" aria-label="報告章節">${items.map(([id, t]) => `<a href="#${id}">${t}</a>`).join('')}</nav>`;
   }
@@ -482,7 +482,7 @@
       tone = 'mid'; icon = '🌤';
       msg = '今天跟你的盤沒有明顯沖合——平盤日，按自己的節奏走就好，適合做累積型的事。';
     }
-    return `<section class="panel today-card t-${tone}" id="sec-today"><h2><span class="no">日</span>今日的你</h2>
+    return `<section class="panel today-card t-${tone}" id="sec-today"><h2>今日的你</h2>
       <p class="today-line">${icon}<strong>${now.getMonth() + 1}/${now.getDate()}・${gz.name}日</strong>${esc(msg)}</p>
       <p class="chart-note">依你的八字日支、年支與喜用五行，和「今天的干支」即時對照——每天都不一樣，明天再回來看 👋</p></section>`;
   }
