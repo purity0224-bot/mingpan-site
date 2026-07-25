@@ -753,7 +753,7 @@
       ['❤️', '桃花運專批', '感情模式・對象輪廓・桃花窗口', '5 題'],
       ['💼', '事業選擇建議', '產業方向・創業適性・未來節奏', '5 題'],
       ['💞', '合盤配對分析', '兩人盤面交叉：引力、摩擦、經營', '8 題'],
-      ['📅', '擇日選時', '程式精算吉日＋建議時辰', '4 題'],
+      ['📅', '擇日選時', '搬家、開業、開刀、結婚——精算吉日＋建議時辰', '4 題'],
       ['📝', '姓名學鑑定', '名字五行是否補到你的喜用神', '3 題'],
     ];
     let b = `<p class="desc">這份免費報告是你的「說明書」；想針對自己的狀況追問——換工作時機、這段感情、這個決定——到 LINE 上跟 AI 命理老師一題一題深入聊。你的盤面會自動帶入，回答附專屬盤面圖表。一題 9 元起、買多最低 5 元/題，不到一杯飲料就能問個透徹。</p>`;
@@ -803,17 +803,17 @@
     // 移除互動元素（單檔為靜態快照）
     clone.querySelectorAll('.hypo .btns, #copy-prompt, #download-report').forEach((el) => el.remove());
     const name = d.input.name || `${d.input.y}${String(d.input.m).padStart(2, '0')}${String(d.input.d).padStart(2, '0')}`;
-    const title = `Marss｜問命織盤所報告｜${name}`;
+    const title = `問命織盤所報告｜${name}`;
     const html = `<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${CH.esc(title)}</title><style>${css}</style></head><body>
-<header class="site"><h1>Marss｜問命織盤所</h1><p class="sub">多系統命理交叉分析・靜態快照（產生於 ${new Date().toLocaleDateString('zh-TW')}）</p></header>
+<header class="site"><h1>問命織盤所</h1><p class="sub">多系統命理交叉分析・靜態快照（產生於 ${new Date().toLocaleDateString('zh-TW')}）</p></header>
 <main>${clone.innerHTML}</main>
-<footer>Marss｜問命織盤所・排盤採天文曆算（角分級精度）・象徵系統交叉閱讀，非實證預測</footer>
+<footer>問命織盤所・排盤採天文曆算（角分級精度）・象徵系統交叉閱讀，非實證預測</footer>
 <script>document.querySelectorAll('.tabs button').forEach(function(t){t.addEventListener('click',function(){var tabs=t.closest('.tabs').querySelectorAll('button');tabs.forEach(function(x){x.classList.remove('active')});t.classList.add('active');var sec=t.closest('section');sec.querySelectorAll('.tab-pane').forEach(function(p){p.classList.toggle('active',p.dataset.pane===t.dataset.tab)})})});<\/script>
 </body></html>`;
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `Marss｜問命織盤所-${name}.html`;
+    a.download = `問命織盤所-${name}.html`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     $('#copy-status').textContent = '已下載單檔報告——可離線開啟、直接轉傳。';
