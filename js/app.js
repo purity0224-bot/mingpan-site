@@ -270,7 +270,6 @@
       renderActionManual(d),
       renderTimeline(d),
       renderCTA(d),
-      renderEpistemic(),
     ].join('');
     $('#report').innerHTML = html;
     // 排盤完成後顯示懸浮 LINE 導流按鈕
@@ -777,13 +776,6 @@
     return panel('sec-time', '貳', '時間層：三波對齊', '八字大運＋紫微大限＋印占 Vimshottari 三條長波對齊；同時換段處＝換軌窗口。', b);
   }
 
-  function renderEpistemic() {
-    return panel('sec-epistemic', '肆', '怎麼看待這份報告', '', `<div class="epistemic">
-      這份報告是<strong>參考，不是判決</strong>。它講的是你「出廠設定」裡各種傾向的強弱——實際人生怎麼走，仍由你決定。<br>
-      排盤數據都經天文精確計算，但「算得準」不等於「說得對」：拿你的真實經驗核對，準的參考、不準的放掉。<br>
-      如果覺得某些說法互相矛盾——人本來就有很多面，那通常代表「兩種都有」，不是系統出錯。
-    </div>`);
-  }
 
   /* ---------- 互動 ---------- */
   function bindTabs() {
