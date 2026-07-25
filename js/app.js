@@ -54,11 +54,6 @@
   function hideGeo() {
     document.querySelectorAll('.geo-field').forEach((f) => f.classList.add('hidden'));
   }
-  /* 晚子時（23:00–23:59 出生）自動提示：換日流派差異與自我校準做法 */
-  function syncLateNote() {
-    const note = $('#latenight-note');
-    if (note) note.classList.toggle('hidden', Number($('#bhh').value) !== 23);
-  }
   function initForm() {
     const sel = $('#city');
     for (const c of Object.keys(CITIES)) sel.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`);
@@ -69,7 +64,6 @@
       /* 選了已知區域＝數值自動帶入，不需顯示；只有「其他（自訂）」才展開經緯度欄位 */
       if (sel.value === 'custom') revealGeo(); else hideGeo();
     });
-    $('#bhh').addEventListener('input', syncLateNote);
     document.querySelectorAll('input[name=time-precision]').forEach((input) => input.addEventListener('change', () => setTimePrecision(input.value)));
     setTimePrecision('exact');
     $('#run').addEventListener('click', () => { demoMode = false; run(); });
@@ -162,7 +156,6 @@
     // 分享連結／存檔載入：經緯度已帶入，直接視為「自訂」並顯示欄位
     $('#city').value = 'custom';
     revealGeo();
-    syncLateNote();
   }
 
   /* ---------- 存檔／分享 ---------- */
