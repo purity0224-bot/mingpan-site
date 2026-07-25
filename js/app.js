@@ -50,6 +50,9 @@
   function revealGeo() {
     document.querySelectorAll('.geo-field').forEach((f) => f.classList.remove('hidden'));
   }
+  function hideGeo() {
+    document.querySelectorAll('.geo-field').forEach((f) => f.classList.add('hidden'));
+  }
   function initForm() {
     const sel = $('#city');
     for (const c of Object.keys(CITIES)) sel.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`);
@@ -57,7 +60,8 @@
     sel.addEventListener('change', () => {
       const c = CITIES[sel.value];
       if (c) { $('#lat').value = c[0]; $('#lon').value = c[1]; $('#tz').value = c[2]; }
-      if (sel.value) revealGeo();
+      /* 選了已知區域＝數值自動帶入，不需顯示；只有「其他（自訂）」才展開經緯度欄位 */
+      if (sel.value === 'custom') revealGeo(); else hideGeo();
     });
     document.querySelectorAll('input[name=time-precision]').forEach((input) => input.addEventListener('change', () => setTimePrecision(input.value)));
     setTimePrecision('exact');
