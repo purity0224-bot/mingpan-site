@@ -903,3 +903,17 @@ details.panel[open] > summary .desc { margin-bottom: 16px; }
   border-radius: 0 10px 10px 0; padding: 10px 13px; margin: 10px 0 4px;
   font-size: .9rem; line-height: 1.75; color: var(--ink-2);
 }
+
+/* ---------- 晚子時雙盤選擇卡 ---------- */
+.boundary-card { border-left: 4px solid #C9A44C; }
+.bd-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px; margin-top: 6px; }
+.bd-opt { border-radius: 12px; padding: 13px 15px; font: inherit; text-align: left; line-height: 1.7; }
+.bd-opt p { margin: 6px 0; font-size: .92rem; color: var(--ink-2); }
+.bd-tag { font-size: .78rem; font-weight: 700; letter-spacing: .04em; }
+.bd-cur { background: rgba(107, 91, 200, .07); border: 1.5px solid rgba(107, 91, 200, .45); }
+.bd-cur .bd-tag { color: #55489E; }
+.bd-mark { font-size: .8rem; color: #3E9B6E; font-weight: 700; }
+.bd-alt { background: var(--surface); border: 1.5px dashed rgba(143, 106, 30, .5); cursor: pointer; transition: box-shadow .2s, border-color .2s; }
+.bd-alt .bd-tag { color: var(--gold); }
+.bd-alt:hover { border-color: var(--gold-deep); border-style: solid; box-shadow: 0 4px 14px rgba(181, 131, 37, .18); }
+.bd-go { display: inline-block; margin-top: 2px; font-size: .84rem; font-weight: 700; color: #8a6510; }

@@ -232,8 +232,12 @@
       timeRange = { start, end }; hh = Math.floor((start + end) / 120); mm = Math.floor((start + end) / 2) % 60;
     }
     if (!Number.isInteger(hh) || !Number.isInteger(mm) || hh < 0 || hh > 23 || mm < 0 || mm > 59) return null;
-    return { y, m, d, hh, mm, tz, lat, lon, sex, useTrueSolar: true, dayBoundary: '23', name: typeof raw.name === 'string' ? raw.name.slice(0, 80) : '', timePrecision, timeRange };
+    /* 晚子時（23:xx）：讀取使用者先前在選擇卡選定的換日流派，預設 23:00 換日 */
+    const dayBoundary = (hh === 23 && timePrecision !== 'range' && safeGet(boundKey({ y, m, d, hh, mm })) === '0') ? '0' : '23';
+    return { y, m, d, hh, mm, tz, lat, lon, sex, useTrueSolar: true, dayBoundary, name: typeof raw.name === 'string' ? raw.name.slice(0, 80) : '', timePrecision, timeRange };
   }
+  /* 晚子時換日流派選擇的儲存鍵（依出生時點記，不同人各自記住） */
+  function boundKey(i) { return 'daybound:' + [i.y, i.m, i.d, i.hh, i.mm].join('-'); }
 
   function clearLocalData() {
     if (!confirm('要清除這台裝置上已存的人物資料嗎？目前顯示的報告不會被刪除。')) return;
@@ -290,6 +294,7 @@
       demoMode ? `<div class="demo-note">👀 這是<strong>範例盤</strong>（1990/5/20 14:30・台北・男）。把上方表單換成你的出生資料，再按一次「織盤」就是你自己的報告。</div>` : '',
       renderTimeUncertainty(d),
       renderNav(),
+      renderBoundaryChooser(d),
       renderToday(d),
       renderTomorrow(d),
       renderChartCards(d),
@@ -301,6 +306,12 @@
     // 排盤完成後顯示懸浮 LINE 導流按鈕
     const fab = $('#line-fab');
     if (fab) fab.classList.remove('hidden');
+    // 晚子時：切換換日流派 → 記住選擇並整份重排
+    const swb = $('#switch-boundary');
+    if (swb) swb.addEventListener('click', () => {
+      safeSet(boundKey(d.input), swb.dataset.b);
+      run();
+    });
     // 時間層色塊：點擊顯示說明（iOS 無 hover，長按會觸發文字選取，改用點擊）
     document.querySelectorAll('.tl-span').forEach((r) => r.addEventListener('click', () => {
       const box = r.closest('figure').querySelector('.tl-detail');
@@ -491,6 +502,23 @@
     }
     return { gz, tone, icon, msg, dateStr: `${date.getMonth() + 1}/${date.getDate()}` };
   }
+  /* --- 晚子時雙盤選擇卡：兩派各排一版，讓使用者一鍵選「比較像我」的 --- */
+  function renderBoundaryChooser(d) {
+    if (d.input.hh !== 23 || d.input.timePrecision === 'range') return '';
+    const curB = d.input.dayBoundary === '0' ? '0' : '23';
+    const altB = curB === '23' ? '0' : '23';
+    let altBazi;
+    try { altBazi = ML.report.buildAll({ ...d.input, dayBoundary: altB }).bazi; } catch (e) { console.error(e); return ''; }
+    const nameOf = (b) => (b === '23' ? '23:00 換日' : '午夜 00:00 換日');
+    const line = (bz) => `日主「${bz.dayMaster.stem}${bz.dayMaster.elem}」${(STEM_PERSON[bz.dayMaster.stem] || '').split('，')[0]}；整體${bz.strength}`;
+    return `<section class="panel boundary-card" id="sec-boundary"><h2>🌙 晚子時：兩種排法，選比較像你的</h2>
+      <p class="desc">你出生在晚上 11 點後，命理界兩派的換日規則會排出兩個不同的「你」。這份報告目前用左邊那版；覺得右邊比較像你，點一下整份報告立刻重排，你的選擇會被記住。</p>
+      <div class="bd-opts">
+        <div class="bd-opt bd-cur"><span class="bd-tag">目前這版｜${nameOf(curB)}</span><p>${esc(line(d.bazi))}</p><span class="bd-mark">✓ 報告使用中</span></div>
+        <button type="button" class="bd-opt bd-alt" id="switch-boundary" data-b="${altB}"><span class="bd-tag">另一版｜${nameOf(altB)}</span><p>${esc(line(altBazi))}</p><span class="bd-go">這版比較像我 → 點我切換</span></button>
+      </div></section>`;
+  }
+
   function renderToday(d) {
     const r = dayRead(d, new Date(), '今天');
     return `<section class="panel today-card t-${r.tone}" id="sec-today"><h2>今日的你</h2>
