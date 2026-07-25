@@ -69,24 +69,16 @@ body::before {
 main, header.site, nav.toc { position: relative; z-index: 1; }
 
 /* ---------- 頂部橫幅（執筆繪星卷） ---------- */
+/* 橫幅：完整顯示整張圖（不裁切），僅底部漸淡融入頁面底色 */
 .hero {
   position: relative; width: 100%; isolation: isolate;
-  height: clamp(250px, 36vw, 490px); overflow: hidden;
-  background: linear-gradient(180deg, #171d33 55%, var(--bg));
+  background: var(--bg);
 }
-.hero img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; transform: scale(1.012); }
+.hero img { width: 100%; height: auto; display: block; }
 .hero::after {
   content: ""; position: absolute; inset: -1px 0;
-  background:
-    linear-gradient(90deg, rgba(13, 18, 35, .12), transparent 36%, transparent 66%, rgba(13, 18, 35, .14)),
-    linear-gradient(180deg, rgba(17, 22, 42, .12), transparent 27%, rgba(241, 238, 247, .98) 96%);
+  background: linear-gradient(180deg, transparent 76%, rgba(241, 238, 247, .55) 91%, var(--bg) 100%);
   pointer-events: none;
-}
-.hero::before {
-  content: ""; position: absolute; z-index: 1; left: 50%; bottom: 15%; width: min(64vw, 820px); height: 1px;
-  transform: translateX(-50%); opacity: .75;
-  background: linear-gradient(90deg, transparent, rgba(239, 210, 132, .85), transparent);
-  box-shadow: 0 0 20px 5px rgba(214, 181, 95, .14);
 }
 
 /* ---------- 頁首（標題疊在橫幅的漸融區上） ---------- */
@@ -807,7 +799,7 @@ details.panel[open] > summary .desc { margin-bottom: 16px; }
 }
 
 @media (max-width: 430px) {
-  .hero { height: 250px; }
+  .hero { height: auto; }
   header.site p.sub { max-width: 340px; font-size: 14px; }
   .form-journey { margin-block: 16px 18px; }
   .form-journey span { gap: 5px; }
