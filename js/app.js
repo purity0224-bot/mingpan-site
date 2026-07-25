@@ -54,6 +54,11 @@
   function hideGeo() {
     document.querySelectorAll('.geo-field').forEach((f) => f.classList.add('hidden'));
   }
+  /* 晚子時（23:00–23:59 出生）自動提示：換日流派差異與自我校準做法 */
+  function syncLateNote() {
+    const note = $('#latenight-note');
+    if (note) note.classList.toggle('hidden', Number($('#bhh').value) !== 23);
+  }
   function initForm() {
     const sel = $('#city');
     for (const c of Object.keys(CITIES)) sel.insertAdjacentHTML('beforeend', `<option value="${c}">${c}</option>`);
@@ -64,6 +69,7 @@
       /* 選了已知區域＝數值自動帶入，不需顯示；只有「其他（自訂）」才展開經緯度欄位 */
       if (sel.value === 'custom') revealGeo(); else hideGeo();
     });
+    $('#bhh').addEventListener('input', syncLateNote);
     document.querySelectorAll('input[name=time-precision]').forEach((input) => input.addEventListener('change', () => setTimePrecision(input.value)));
     setTimePrecision('exact');
     $('#run').addEventListener('click', () => { demoMode = false; run(); });
@@ -156,6 +162,7 @@
     // 分享連結／存檔載入：經緯度已帶入，直接視為「自訂」並顯示欄位
     $('#city').value = 'custom';
     revealGeo();
+    syncLateNote();
   }
 
   /* ---------- 存檔／分享 ---------- */
@@ -284,6 +291,7 @@
       renderTimeUncertainty(d),
       renderNav(),
       renderToday(d),
+      renderTomorrow(d),
       renderChartCards(d),
       renderActionManual(d),
       renderTimeline(d),
@@ -375,7 +383,7 @@
 
   function renderNav() {
     const items = [
-      ['sec-today', '今日的你'], ['sec-charts', '盤面圖卡'], ['sec-action', '行動手冊'], ['sec-time', '時間層'], ['sec-cta', '深入問答'],
+      ['sec-today', '今日的你'], ['sec-tomorrow', '明日的你'], ['sec-charts', '盤面圖卡'], ['sec-action', '行動手冊'], ['sec-time', '時間層'], ['sec-cta', '深入問答'],
     ];
     return `<nav class="toc" aria-label="報告章節">${items.map(([id, t]) => `<a href="#${id}">${t}</a>`).join('')}</nav>`;
   }
@@ -456,35 +464,44 @@
     return `<div class="fld evd"><span class="fld-tag why">為什麼是你</span><ul class="evd-list">${parts.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div>`;
   }
 
-  /* --- B1：今日的你（每日回訪鉤子——今天干支對照本人日支／年支／喜用） --- */
-  function renderToday(d) {
+  /* --- B1：今日／明日的你（每日回訪鉤子——當日干支對照本人日支／年支／喜用） --- */
+  function dayRead(d, date, word) {
     const Cc = ML.core;
     const B = d.bazi;
-    const now = new Date();
-    const gz = Cc.ganzhi(Cc.jdnFromCivil(now.getFullYear(), now.getMonth() + 1, now.getDate()) - Cc.jdnFromCivil(1949, 10, 1));
+    const gz = Cc.ganzhi(Cc.jdnFromCivil(date.getFullYear(), date.getMonth() + 1, date.getDate()) - Cc.jdnFromCivil(1949, 10, 1));
     const HE6 = { 0: 1, 1: 0, 2: 11, 11: 2, 3: 10, 10: 3, 4: 9, 9: 4, 5: 8, 8: 5, 6: 7, 7: 6 };
     const dayB = B.pillars.day.branchIdx, yearB = B.pillars.year.branchIdx;
     const favHit = [Cc.STEM_ELEM[gz.stemIdx], Cc.BRANCH_ELEM[gz.branchIdx]].filter((e, i, a) => B.favorable.includes(e) && a.indexOf(e) === i);
     let tone, icon, msg;
     if ((gz.branchIdx + 6) % 12 === dayB) {
       tone = 'low'; icon = '🌊';
-      msg = '今天的地支正沖你的日支——情緒和節奏容易被打亂的一天。重大決定、簽約、告白先緩一緩，拿來收尾整理最順。';
+      msg = `${word}的地支正沖你的日支——情緒和節奏容易被打亂的一天。重大決定、簽約、告白先緩一緩，拿來收尾整理最順。`;
     } else if ((gz.branchIdx + 6) % 12 === yearB) {
       tone = 'low'; icon = '🍃';
-      msg = '今天的地支沖你的年支——外部環境變數偏多的一天，行程多留緩衝、別硬碰硬。';
+      msg = `${word}的地支沖你的年支——外部環境變數偏多的一天，行程多留緩衝、別硬碰硬。`;
     } else if (HE6[gz.branchIdx] === dayB) {
       tone = 'good'; icon = '🤝';
-      msg = '今天的地支跟你的日支「六合」——人與事都容易對上頻。適合談合作、約重要的人、開口提需求。';
+      msg = `${word}的地支跟你的日支「六合」——人與事都容易對上頻。適合談合作、約重要的人、開口提需求。`;
     } else if (favHit.length) {
       tone = 'good'; icon = '☀️';
-      msg = `今天是你的喜用「${favHit.join('、')}」日——環境順風，推進度、做決定、開新局都有加成。`;
+      msg = `${word}是你的喜用「${favHit.join('、')}」日——環境順風，推進度、做決定、開新局都有加成。`;
     } else {
       tone = 'mid'; icon = '🌤';
-      msg = '今天跟你的盤沒有明顯沖合——平盤日，按自己的節奏走就好，適合做累積型的事。';
+      msg = `${word}跟你的盤沒有明顯沖合——平盤日，按自己的節奏走就好，適合做累積型的事。`;
     }
-    return `<section class="panel today-card t-${tone}" id="sec-today"><h2>今日的你</h2>
-      <p class="today-line">${icon}<strong>${now.getMonth() + 1}/${now.getDate()}・${gz.name}日</strong>${esc(msg)}</p>
+    return { gz, tone, icon, msg, dateStr: `${date.getMonth() + 1}/${date.getDate()}` };
+  }
+  function renderToday(d) {
+    const r = dayRead(d, new Date(), '今天');
+    return `<section class="panel today-card t-${r.tone}" id="sec-today"><h2>今日的你</h2>
+      <p class="today-line">${r.icon}<strong>${r.dateStr}・${r.gz.name}日</strong>${esc(r.msg)}</p>
       <p class="chart-note">依你的八字日支、年支與喜用五行，和「今天的干支」即時對照——每天都不一樣，明天再回來看 👋</p></section>`;
+  }
+  function renderTomorrow(d) {
+    const r = dayRead(d, new Date(Date.now() + 86400000), '明天');
+    return `<section class="panel today-card t-${r.tone}" id="sec-tomorrow"><h2>明日的你</h2>
+      <p class="today-line">${r.icon}<strong>${r.dateStr}・${r.gz.name}日</strong>${esc(r.msg)}</p>
+      <p class="chart-note">先看明天的風向，方便提早排行程——日期一過，內容就會自動更新。</p></section>`;
   }
 
   /* --- 盤面圖卡（四張，與 LINE 版同視覺）＋各圖的個人化白話解讀 --- */
