@@ -883,3 +883,16 @@ details.panel[open] > summary .desc { margin-bottom: 16px; }
 .evd-list { list-style: none; margin: 2px 0 0; padding: 0; }
 .evd-list li { font-size: .86rem; line-height: 1.65; padding-left: 16px; position: relative; }
 .evd-list li::before { content: "✦"; position: absolute; left: 2px; color: var(--gold-deep); font-size: .7rem; top: 4px; }
+
+/* ---------- 盤面圖卡（四張深紫夜空卡） ---------- */
+.chartcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(430px, 100%), 1fr)); gap: 18px; margin: 6px 0 4px; }
+.chartcard { margin: 0; }
+.chartcard svg { width: 100%; height: auto; display: block; border-radius: 14px; box-shadow: 0 6px 20px rgba(33, 28, 66, .28); }
+.chartcard figcaption { font-size: .82rem; color: var(--ink-3); margin-top: 7px; line-height: 1.6; padding: 0 2px; }
+
+/* ---------- 範例報告提示（B3） ---------- */
+.demo-note {
+  background: linear-gradient(120deg, #FFF6E5, #FBF0D8);
+  border: 1px dashed rgba(143, 106, 30, .5); border-radius: 12px;
+  padding: 12px 16px; margin: 22px 0 0; font-size: .92rem; line-height: 1.7; color: #6b5312;
+}

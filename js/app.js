@@ -6,6 +6,7 @@
   const $ = (sel) => document.querySelector(sel);
   const CH = ML.charts;
   const esc = CH.esc;
+  let demoMode = false; // B3：範例報告模式（報告頂端顯示範例提示）
 
   const CITIES = {
     // 台灣（依北到南、本島至離島）
@@ -65,7 +66,21 @@
     });
     document.querySelectorAll('input[name=time-precision]').forEach((input) => input.addEventListener('change', () => setTimePrecision(input.value)));
     setTimePrecision('exact');
-    $('#run').addEventListener('click', run);
+    $('#run').addEventListener('click', () => { demoMode = false; run(); });
+    /* B3：一鍵看範例報告（降低填資料門檻） */
+    const demoBtn = $('#demo-run');
+    if (demoBtn) demoBtn.addEventListener('click', () => {
+      $('#pname').value = '範例';
+      $('#bdate').value = '1990-05-20';
+      const exact = document.querySelector('input[name=time-precision][value=exact]');
+      if (exact) { exact.checked = true; setTimePrecision('exact'); }
+      $('#bhh').value = 14; $('#bmm').value = 30;
+      $('#city').value = '台北';
+      $('#lat').value = 25.04; $('#lon').value = 121.56; $('#tz').value = 8;
+      document.querySelector('input[name=sex][value=male]').checked = true;
+      demoMode = true;
+      run();
+    });
     $('#save-profile').addEventListener('click', saveProfile);
     $('#share-link').addEventListener('click', openShareDialog);
     $('#share-site-only').addEventListener('click', () => copyShareLink(siteUrl(), '已複製網站連結'));
@@ -265,9 +280,11 @@
   function render(d) {
     const { input } = d;
     const html = [
+      demoMode ? `<div class="demo-note">👀 這是<strong>範例盤</strong>（1990/5/20 14:30・台北・男）。把上方表單換成你的出生資料，再按一次「織盤」就是你自己的報告。</div>` : '',
       renderTimeUncertainty(d),
       renderNav(),
       renderToday(d),
+      renderChartCards(d),
       renderActionManual(d),
       renderTimeline(d),
       renderCTA(d),
@@ -358,7 +375,7 @@
 
   function renderNav() {
     const items = [
-      ['sec-action', '行動手冊'], ['sec-time', '時間層'], ['sec-cta', '深入問答'],
+      ['sec-charts', '盤面圖卡'], ['sec-action', '行動手冊'], ['sec-time', '時間層'], ['sec-cta', '深入問答'],
     ];
     return `<nav class="toc" aria-label="報告章節">${items.map(([id, t]) => `<a href="#${id}">${t}</a>`).join('')}</nav>`;
   }
@@ -468,6 +485,20 @@
     return `<section class="panel today-card t-${tone}" id="sec-today"><h2><span class="no">日</span>今日的你</h2>
       <p class="today-line">${icon}<strong>${now.getMonth() + 1}/${now.getDate()}・${gz.name}日</strong>${esc(msg)}</p>
       <p class="chart-note">依你的八字日支、年支與喜用五行，和「今天的干支」即時對照——每天都不一樣，明天再回來看 👋</p></section>`;
+  }
+
+  /* --- 盤面圖卡（四張，與 LINE 版同視覺） --- */
+  function renderChartCards(d) {
+    const cards = [
+      [CH.annualCard(d), '十年運勢時間波：哪年進攻、哪年防守，一眼看十年'],
+      [CH.wuxingCard(d), '五行能量圖：你的五行分佈，金框★＝喜用神（能量補給來源）'],
+      [CH.baziCard(d), '八字四柱命式：四柱干支、十神與藏干，金框是你的日主'],
+      [CH.hdCard(d), '人類圖能量中心：金色＝有定義（穩定運作）、空心＝開放（受環境影響）'],
+    ];
+    let b = `<div class="chartcards">${cards.map(([svg, cap]) => `<figure class="chartcard">${svg}<figcaption>${esc(cap)}</figcaption></figure>`).join('')}</div>`;
+    b += `<p class="chart-note">圖卡都是用你本人的盤即時繪製。想知道每張圖對你的具體意義——哪顆星在做事、哪年該做什麼——加 LINE 個人化問答，老師逐張講給你聽。</p>`;
+    b += ctaLine('詳細分析請加入 LINE 個人化問答');
+    return panel('sec-charts', '圖', '你的盤面圖卡', '', b);
   }
 
   function renderActionManual(d) {

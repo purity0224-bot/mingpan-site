@@ -236,6 +236,139 @@
     return h + '</div><p class="chart-note">出生年月日各位數出現頻次（深色＝主命數）；「·」＝缺數</p>';
   }
 
-  ML.charts = { COLORS, radar, meterGroup, signedBars, timelineChart, bodygraph, miniRadar, lineChart, freqBars, esc };
+  /* =========================================================
+   * 盤面圖卡四張（與 LINE 版同視覺：深紫夜空卡）— viewBox 響應式 SVG
+   * ========================================================= */
+  const CW = 1040, CH2 = 585;
+  const CARD_BG = `<defs><linearGradient id="cardbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3D3470"/><stop offset="1" stop-color="#211C42"/></linearGradient></defs>
+    <rect width="${CW}" height="${CH2}" rx="18" fill="url(#cardbg)"/>
+    <circle cx="80" cy="60" r="1.6" fill="#fff" opacity=".55"/><circle cx="920" cy="80" r="2" fill="#fff" opacity=".4"/>
+    <circle cx="540" cy="40" r="1.4" fill="#fff" opacity=".45"/><circle cx="180" cy="520" r="1.6" fill="#fff" opacity=".35"/>
+    <circle cx="980" cy="500" r="1.5" fill="#fff" opacity=".45"/><circle cx="700" cy="550" r="1.3" fill="#fff" opacity=".3"/>`;
+  const CARD_BRAND = `<text x="${CW - 30}" y="${CH2 - 24}" font-size="22" fill="rgba(255,255,255,.5)" text-anchor="end" font-family="sans-serif">問命織盤所</text>`;
+  const cardTitle = (t, sub) => `<text x="50" y="72" font-size="44" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="4">${t}</text>
+    <text x="50" y="112" font-size="24" fill="#C9A44C" font-family="sans-serif" letter-spacing="2">${esc(sub)}</text>
+    <rect x="50" y="130" width="${CW - 100}" height="2" fill="rgba(201,164,76,.5)"/>`;
+  const cardWrap = (inner, label) => `<svg viewBox="0 0 ${CW} ${CH2}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${label}">${inner}</svg>`;
+  const CARD_ELEM_COLOR = { '木': '#6FBF73', '火': '#E06B5B', '土': '#B08850', '金': '#D8B94E', '水': '#5B9BD8' };
+
+  /* 五行能量圖 */
+  function wuxingCard(d) {
+    const pct = d.bazi.elemPct, fav = d.bazi.favorable;
+    const elems = ['木', '火', '土', '金', '水'];
+    const max = Math.max(...elems.map((e) => pct[e] || 0), 1);
+    const barW = 150, gap = 40, x0 = (CW - (barW * 5 + gap * 4)) / 2, baseY = 470, maxH = 260;
+    let bars = '';
+    elems.forEach((e, i) => {
+      const v = pct[e] || 0;
+      const h = Math.max(10, (v / max) * maxH);
+      const x = x0 + i * (barW + gap);
+      const isFav = fav.includes(e);
+      bars += `<rect x="${x}" y="${baseY - h}" width="${barW}" height="${h}" rx="10" fill="${CARD_ELEM_COLOR[e]}" opacity="${isFav ? 1 : 0.55}"/>
+${isFav ? `<rect x="${x - 4}" y="${baseY - h - 4}" width="${barW + 8}" height="${h + 8}" rx="12" fill="none" stroke="#C9A44C" stroke-width="3"/>` : ''}
+<text x="${x + barW / 2}" y="${baseY - h - 16}" font-size="30" font-weight="700" fill="#fff" text-anchor="middle" font-family="sans-serif">${v.toFixed(0)}%</text>
+<text x="${x + barW / 2}" y="${baseY + 46}" font-size="36" font-weight="700" fill="${CARD_ELEM_COLOR[e]}" text-anchor="middle" font-family="sans-serif">${e}${isFav ? ' ★' : ''}</text>`;
+    });
+    const note = `<text x="50" y="${CH2 - 24}" font-size="22" fill="rgba(255,255,255,.65)" font-family="sans-serif">★ 喜用神：${fav.join('、')}（你的能量補給來源）</text>`;
+    return cardWrap(`${CARD_BG}${cardTitle('五行能量圖', `日主${d.bazi.dayMaster.stem}${d.bazi.dayMaster.elem}・${d.bazi.strength}`)}${bars}${note}${CARD_BRAND}`, '五行能量圖');
+  }
+
+  /* 十年運勢時間波 */
+  const CARD_TONE = { good: ['#5CB86B', '進攻'], mid: ['#C9A44C', '平持'], low: ['#DB6A5F', '防守'] };
+  function annualCard(d) {
+    const at = ML.report.annualTable(d, new Date().getFullYear(), 10);
+    const n = at.rows.length, bw = (CW - 100) / n;
+    let seg = '';
+    at.rows.forEach((r, i) => {
+      const [color, label] = CARD_TONE[r.tone] || CARD_TONE.mid;
+      const x = 50 + i * bw;
+      const hgt = r.tone === 'good' ? 200 : r.tone === 'low' ? 110 : 150;
+      const y = 400 - hgt;
+      seg += `<rect x="${x + 5}" y="${y}" width="${bw - 10}" height="${hgt}" rx="10" fill="${color}" opacity="${r.tone === 'mid' ? 0.75 : 0.95}"/>
+<text x="${x + bw / 2}" y="${y - 12}" font-size="22" fill="${color}" text-anchor="middle" font-family="sans-serif" font-weight="700">${label}</text>
+<text x="${x + bw / 2}" y="435" font-size="26" font-weight="700" fill="#fff" text-anchor="middle" font-family="sans-serif">${r.year}</text>
+<text x="${x + bw / 2}" y="468" font-size="22" fill="rgba(255,255,255,.75)" text-anchor="middle" font-family="sans-serif">${r.gz}</text>
+<text x="${x + bw / 2}" y="500" font-size="20" fill="rgba(255,255,255,.55)" text-anchor="middle" font-family="sans-serif">${r.god}</text>`;
+    });
+    const legend = [['#5CB86B', '進攻年：放手推進', 50], ['#C9A44C', '平持年：穩中經營', 330], ['#DB6A5F', '防守年：保守蹲點', 610]]
+      .map(([c, t, x]) => `<circle cx="${x + 10}" cy="${CH2 - 31}" r="10" fill="${c}"/><text x="${x + 30}" y="${CH2 - 24}" font-size="22" fill="rgba(255,255,255,.65)" font-family="sans-serif">${t}</text>`).join('');
+    return cardWrap(`${CARD_BG}${cardTitle('十年運勢時間波', '流年紅綠燈・年界立春')}${seg}${legend}${CARD_BRAND}`, '十年運勢時間波');
+  }
+
+  /* 八字四柱命式 */
+  function baziCard(d) {
+    const B = d.bazi, C = ML.core;
+    const cols = [
+      { key: 'hour', label: '時柱' }, { key: 'day', label: '日柱' },
+      { key: 'month', label: '月柱' }, { key: 'year', label: '年柱' },
+    ]; // 傳統右→左：年在最右
+    const colW = 200, gap = 30, x0 = (CW - (colW * 4 + gap * 3)) / 2;
+    let body = '';
+    cols.forEach((c, i) => {
+      const p = B.pillars[c.key];
+      const x = x0 + i * (colW + gap);
+      const isDay = c.key === 'day';
+      const tg = isDay ? '日主' : ML.bazi.tenGod(B.pillars.day.stemIdx, p.stemIdx);
+      const stemColor = CARD_ELEM_COLOR[C.STEM_ELEM[p.stemIdx]] || '#fff';
+      const branchColor = CARD_ELEM_COLOR[C.BRANCH_ELEM[p.branchIdx]] || '#fff';
+      const hidden = (C.HIDDEN_STEMS[p.branch] || []).map(([hs]) => {
+        const hsIdx = C.STEMS.indexOf(hs);
+        return `${hs}${hsIdx >= 0 && !isDay ? '・' + ML.bazi.tenGod(B.pillars.day.stemIdx, hsIdx) : ''}`;
+      }).join('　');
+      body += `<rect x="${x}" y="150" width="${colW}" height="360" rx="12" fill="rgba(255,255,255,${isDay ? '.10' : '.04'})" stroke="${isDay ? '#C9A44C' : 'rgba(255,255,255,.22)'}" stroke-width="${isDay ? 3 : 1.5}"/>
+<text x="${x + colW / 2}" y="190" font-size="26" fill="rgba(255,255,255,.7)" text-anchor="middle" font-family="sans-serif">${c.label}</text>
+<text x="${x + colW / 2}" y="228" font-size="22" fill="${isDay ? '#C9A44C' : 'rgba(255,255,255,.85)'}" text-anchor="middle" font-family="sans-serif">${tg}</text>
+<text x="${x + colW / 2}" y="308" font-size="64" font-weight="700" fill="${stemColor}" text-anchor="middle" font-family="sans-serif">${p.stem}</text>
+<text x="${x + colW / 2}" y="398" font-size="64" font-weight="700" fill="${branchColor}" text-anchor="middle" font-family="sans-serif">${p.branch}</text>
+<text x="${x + colW / 2}" y="448" font-size="19" fill="rgba(255,255,255,.65)" text-anchor="middle" font-family="sans-serif">${hidden}</text>
+<text x="${x + colW / 2}" y="488" font-size="18" fill="rgba(255,255,255,.45)" text-anchor="middle" font-family="sans-serif">${p.nayinName}</text>`;
+    });
+    const legend = `<text x="50" y="${CH2 - 24}" font-size="22" fill="rgba(255,255,255,.65)" font-family="sans-serif">喜用神：${B.favorable.join('、')}　｜　字色＝五行（綠木・紅火・棕土・金金・藍水）</text>`;
+    return cardWrap(`${CARD_BG}${cardTitle('八字四柱命式', `日主${B.dayMaster.stem}${B.dayMaster.elem}・${B.strength}・${B.pattern.name}`)}${body}${legend}${CARD_BRAND}`, '八字四柱命式');
+  }
+
+  /* 人類圖九中心 */
+  const CARD_HD_CENTERS = [
+    { key: '頭腦', shape: 'triUp', x: 300, y: 175 },
+    { key: '邏輯', shape: 'triDown', x: 300, y: 245 },
+    { key: '喉嚨', shape: 'square', x: 300, y: 318 },
+    { key: 'G', shape: 'diamond', x: 300, y: 398 },
+    { key: '意志', shape: 'triUp', x: 400, y: 420, small: true },
+    { key: '情緒', shape: 'triDown', x: 445, y: 505 },
+    { key: '薦骨', shape: 'square', x: 300, y: 490 },
+    { key: '直覺', shape: 'triDown', x: 155, y: 505 },
+    { key: '根部', shape: 'square', x: 300, y: 555, half: true },
+  ];
+  function cardShapePath(c) {
+    const s = c.small ? 26 : 34;
+    const { x, y } = c;
+    if (c.shape === 'triUp') return `M${x},${y - s} L${x + s},${y + s * 0.8} L${x - s},${y + s * 0.8} Z`;
+    if (c.shape === 'triDown') return `M${x},${y + s} L${x + s},${y - s * 0.8} L${x - s},${y - s * 0.8} Z`;
+    if (c.shape === 'diamond') return `M${x},${y - s} L${x + s},${y} L${x},${y + s} L${x - s},${y} Z`;
+    const h = c.half ? s * 0.7 : s;
+    return `M${x - s},${y - h} L${x + s},${y - h} L${x + s},${y + h} L${x - s},${y + h} Z`;
+  }
+  function hdCard(d) {
+    const defined = d.hd.definedCenters.map((s) => s.replace(/（.*/, ''));
+    const isDef = (k) => defined.some((n) => n.startsWith(k) || k.startsWith(n));
+    let shapes = '';
+    for (const c of CARD_HD_CENTERS) {
+      const on = isDef(c.key);
+      shapes += `<path d="${cardShapePath(c)}" fill="${on ? '#C9A44C' : 'none'}" stroke="${on ? '#E8CE85' : 'rgba(255,255,255,.5)'}" stroke-width="2.5"/>
+<text x="${c.x + (c.key === '意志' ? 52 : c.key === '情緒' ? 62 : c.key === '直覺' ? -62 : 68)}" y="${c.y + 8}" font-size="24" fill="${on ? '#E8CE85' : 'rgba(255,255,255,.55)'}" font-family="sans-serif" text-anchor="${c.key === '直覺' ? 'end' : 'start'}">${c.key}</text>`;
+    }
+    const info = `
+<text x="620" y="220" font-size="30" fill="rgba(255,255,255,.7)" font-family="sans-serif">類型</text>
+<text x="620" y="268" font-size="40" font-weight="700" fill="#fff" font-family="sans-serif">${esc(d.hd.type.split(' ')[0])}</text>
+<text x="620" y="330" font-size="30" fill="rgba(255,255,255,.7)" font-family="sans-serif">內在權威</text>
+<text x="620" y="378" font-size="36" font-weight="700" fill="#fff" font-family="sans-serif">${esc(d.hd.authority.split('（')[0])}</text>
+<text x="620" y="440" font-size="30" fill="rgba(255,255,255,.7)" font-family="sans-serif">人生角色</text>
+<text x="620" y="488" font-size="36" font-weight="700" fill="#fff" font-family="sans-serif">${esc(d.hd.profile)} ${esc(d.hd.profileName || '')}</text>
+<text x="620" y="540" font-size="24" fill="#C9A44C" font-family="sans-serif">金色＝有定義（穩定運作的能量）</text>`;
+    return cardWrap(`${CARD_BG}${cardTitle('人類圖能量中心', `${d.hd.definition}・通道 ${d.hd.channels.length} 條`)}${shapes}${info}${CARD_BRAND}`, '人類圖能量中心');
+  }
+
+  ML.charts = { COLORS, radar, meterGroup, signedBars, timelineChart, bodygraph, miniRadar, lineChart, freqBars, esc, wuxingCard, annualCard, baziCard, hdCard };
   if (typeof module !== 'undefined' && module.exports) module.exports = ML;
 })(typeof window !== 'undefined' ? window : globalThis);
