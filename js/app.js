@@ -393,7 +393,7 @@
   }
 
   /* --- LINE 導流共用 --- */
-  const LINE_URL = 'https://line.me/R/ti/p/@989vkcos';
+  const LINE_URL = 'https://line.me/R/ti/p/@askfate';
   function ctaLine(text) {
     return `<p class="cta-inline"><a href="${LINE_URL}" target="_blank" rel="noopener">${text} →</a></p>`;
   }
@@ -926,7 +926,7 @@
     ];
     let b = `<p class="desc">這份免費報告是你的「說明書」；想針對自己的狀況追問——換工作時機、這段感情、這個決定——到 LINE 上跟 AI 命理老師一題一題深入聊。你的盤面會自動帶入，回答附專屬盤面圖表。一題 9 元起、買多最低 5 元/題，不到一杯飲料就能問個透徹。</p>`;
     b += `<div class="cta-services">${services.map(([ic, name, desc, price]) => `<div class="cta-item"><span class="cta-ic">${ic}</span><div class="cta-body"><strong>${name}</strong><span class="cta-desc">${desc}</span></div><span class="cta-price">${price}</span></div>`).join('')}</div>`;
-    b += `<div class="cta-btn-wrap"><a class="cta-line-btn" href="https://line.me/R/ti/p/@989vkcos" target="_blank" rel="noopener">加 LINE 開始深入問 →</a><p class="chart-note" style="text-align:center;margin-top:10px">🎁 每月前 1,000 名完成綁定，免費送 1 題（送完為止）<br>LINE 搜尋 @989vkcos｜綁定出生資料一次，之後隨問隨答</p></div>`;
+    b += `<div class="cta-btn-wrap"><a class="cta-line-btn" href="https://line.me/R/ti/p/@askfate" target="_blank" rel="noopener">加 LINE 開始深入問 →</a><p class="chart-note" style="text-align:center;margin-top:10px">🎁 每月前 1,000 名完成綁定，免費送 1 題（送完為止）<br>👥 分享好友：邀請成功雙方再各送 1 題（送完為止）<br>LINE 搜尋 @askfate｜綁定出生資料一次，之後隨問隨答</p></div>`;
     return panel('sec-cta', '參', '深入問答：問命織盤所', '', b);
   }
 
