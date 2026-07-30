@@ -401,7 +401,7 @@
   /* --- AI 深度提問（匯出提示詞） --- */
   function renderAIPrompt(d) {
     const prompt = ML.report.exportPrompt(d);
-    const b = `<p class="probe-plain">想深入追問，最省事的路是 <a href="${LINE_URL}" target="_blank" rel="noopener"><strong>LINE 問命織盤所</strong></a>——盤面自動帶入、命理老師人設調校好、回答附你的專屬盤面圖，一題 9 元。下面的工具留給想自己動手的進階玩家：</p>
+    const b = `<p class="probe-plain">想深入追問，最省事的路是 <a href="${LINE_URL}" target="_blank" rel="noopener"><strong>LINE 問命織盤所</strong></a>——盤面自動帶入、命理老師人設調校好、回答附你的專屬盤面圖，5 題只要 49 元。下面的工具留給想自己動手的進階玩家：</p>
     <p class="probe-plain">把<strong>完整盤面提示詞</strong>複製給任何 AI（ChatGPT、Claude、Gemini 都可以）。它包含你已精算好的全部盤面數據與分析方法論——AI 不必重新排盤、也不會亂編度數，直接站在這份報告的肩膀上往深處答。</p>
     <div class="ai-actions"><button class="ghost" id="copy-ai-btn">一鍵複製提示詞</button><span id="ai-copy-status" class="form-note"></span></div>
     <textarea id="ai-prompt-text" readonly rows="9" aria-label="AI 深度解讀提示詞">${esc(prompt)}</textarea>
@@ -442,7 +442,7 @@
     <div class="horizon"><span class="hz-tag">長期｜十年以上</span><ul>${s.horizons.long.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div></div>`;
     b += `<div class="summary-block"><h4>各領域建議</h4><ul>${s.domains.map((dm) => `<li><strong>${esc(dm.name)}</strong>｜${esc(dm.text)}<div class="chart-note">依據：${esc(dm.src)}</div></li>`).join('')}</ul></div>`;
     b += `<p class="chart-note">這一區是整份報告的摘要，每條結論都標了出處，細節和證據在後面各章。未來走勢是抓節奏用的粗篩，別當判決書。</p>`;
-    return panel('sec-summary', '壹', '總結與建議', '六套系統交叉之後，指向最一致的結論都在這裡——先看這區就夠。', b + ctaLine('看完想針對你的狀況追問？LINE 一題 9 元深入問'));
+    return panel('sec-summary', '壹', '總結與建議', '六套系統交叉之後，指向最一致的結論都在這裡——先看這區就夠。', b + ctaLine('看完想針對你的狀況追問？LINE 最低 5 元/題深入問'));
   }
 
   /* --- 行動手冊 --- */
@@ -915,7 +915,7 @@
   /* --- 深入問答導流 --- */
   function renderCTA(d) {
     const services = [
-      ['💬', '單題深度問答', '任何問題，AI 命理老師依你的盤即時分析', '9 元/題起'],
+      ['💬', '單題深度問答', '任何問題，AI 命理老師依你的盤即時分析', '最低 5 元/題'],
       ['📝', '姓名學鑑定', '名字五行是否補到你的喜用神＋直接幫你選名字', '3 題'],
       ['📜', '流年運勢詳批', '未來五年逐年批注＋關鍵月份', '4 題'],
       ['📅', '擇日選時', '搬家、開業、簽約、開刀——精算吉日＋建議時辰', '4 題'],
@@ -924,7 +924,7 @@
       ['💞', '合盤配對分析', '兩人盤面交叉：引力、摩擦、經營', '8 題'],
       ['💒', '雙人婚課擇日', '雙方八字合參，挑一個兩人都不沖的好日子', '8 題'],
     ];
-    let b = `<p class="desc">這份免費報告是你的「說明書」；想針對自己的狀況追問——換工作時機、這段感情、這個決定——到 LINE 上跟 AI 命理老師一題一題深入聊。你的盤面會自動帶入，回答附專屬盤面圖表。一題 9 元起、買多最低 5 元/題，不到一杯飲料就能問個透徹。</p>`;
+    let b = `<p class="desc">這份免費報告是你的「說明書」；想針對自己的狀況追問——換工作時機、這段感情、這個決定——到 LINE 上跟 AI 命理老師一題一題深入聊。你的盤面會自動帶入，回答附專屬盤面圖表。5 題 49 元起、買多最低 5 元/題，不到一杯飲料就能問個透徹。</p>`;
     b += `<div class="cta-services">${services.map(([ic, name, desc, price]) => `<div class="cta-item"><span class="cta-ic">${ic}</span><div class="cta-body"><strong>${name}</strong><span class="cta-desc">${desc}</span></div><span class="cta-price">${price}</span></div>`).join('')}</div>`;
     b += `<div class="cta-btn-wrap"><a class="cta-line-btn" href="https://line.me/R/ti/p/@askfate" target="_blank" rel="noopener">加 LINE 開始深入問 →</a><p class="chart-note" style="text-align:center;margin-top:10px">🎁 每月前 1,000 名完成綁定，免費送 1 題（送完為止）<br>👥 分享好友：邀請成功雙方再各送 1 題（送完為止）<br>LINE 搜尋 @askfate｜綁定出生資料一次，之後隨問隨答</p></div>`;
     return panel('sec-cta', '參', '深入問答：問命織盤所', '', b);
