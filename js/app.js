@@ -37,12 +37,6 @@
 
   const pad2 = (n) => String(n).padStart(2, '0');
   const formatTime = (mins) => `${pad2(Math.floor(mins / 60))}:${pad2(mins % 60)}`;
-  function timeToMinutes(value) {
-    const m = /^(\d{2}):(\d{2})$/.exec(value || '');
-    if (!m) return null;
-    const h = Number(m[1]), min = Number(m[2]);
-    return h >= 0 && h < 24 && min >= 0 && min < 60 ? h * 60 + min : null;
-  }
   function safeGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
   function safeSet(key, value) { try { localStorage.setItem(key, value); return true; } catch (e) { return false; } }
   function safeRemove(key) { try { localStorage.removeItem(key); } catch (e) { /* 瀏覽器拒絕儲存時靜默略過 */ } }
@@ -118,8 +112,10 @@
     const timePrecision = $('input[name=time-precision]:checked').value;
     let hh, mm, timeRange = null;
     if (timePrecision === 'range') {
-      const start = timeToMinutes($('#time-start').value), end = timeToMinutes($('#time-end').value);
-      if (start === null || end === null || start >= end) return null;
+      /* 時辰下拉選單：value 為「起-迄」分鐘數（同一天內；子時分凌晨/深夜兩段） */
+      const seg = ($('#time-branch').value || '').split('-').map(Number);
+      const start = seg[0], end = seg[1];
+      if (!Number.isInteger(start) || !Number.isInteger(end) || start >= end) return null;
       const midpoint = Math.floor((start + end) / 2);
       hh = Math.floor(midpoint / 60); mm = midpoint % 60;
       timeRange = { start, end };
@@ -147,8 +143,18 @@
     document.querySelector(`input[name=time-precision][value=${timePrecision}]`).checked = true;
     setTimePrecision(timePrecision);
     if (timePrecision === 'range') {
-      $('#time-start').value = formatTime(inp.timeRange.start);
-      $('#time-end').value = formatTime(inp.timeRange.end);
+      /* 舊分享連結可能帶自訂區間：選單裡沒有對應選項時，回填包含區間中點的時辰 */
+      const sel = $('#time-branch');
+      const exact = `${inp.timeRange.start}-${inp.timeRange.end}`;
+      if ([...sel.options].some((o) => o.value === exact)) sel.value = exact;
+      else {
+        const mid = Math.floor((inp.timeRange.start + inp.timeRange.end) / 2);
+        const hit = [...sel.options].find((o) => {
+          const p = o.value.split('-').map(Number);
+          return p.length === 2 && mid >= p[0] && mid <= p[1];
+        });
+        sel.value = hit ? hit.value : '';
+      }
     } else { $('#bhh').value = inp.hh; $('#bmm').value = inp.mm; }
     $('#tz').value = inp.tz; $('#lat').value = inp.lat; $('#lon').value = inp.lon;
     document.querySelector(`input[name=sex][value=${inp.sex}]`).checked = true;
@@ -162,7 +168,7 @@
   function profiles() { try { return JSON.parse(safeGet(LS_KEY) || '[]'); } catch (e) { return []; } }
   function saveProfile() {
     const inp = readForm();
-    if (!inp) return alert('請完整填寫出生日期，並填入正確時間或同一天內的時間區間');
+    if (!inp) return alert('請完整填寫出生日期，並填入正確時間或選擇出生時辰');
     const list = profiles();
     const time = inp.timePrecision === 'range' ? `${formatTime(inp.timeRange.start)}–${formatTime(inp.timeRange.end)}` : `${inp.hh}:${pad2(inp.mm)}`;
     const label = inp.name || `${inp.y}/${inp.m}/${inp.d} ${time}`;
@@ -254,7 +260,7 @@
   function run() {
     if (!$('#city').value) { alert('請先選擇出生區域——找不到你的城市就選「其他」，再輸入經緯度'); return; }
     const inp = readForm();
-    if (!inp || isNaN(inp.tz) || isNaN(inp.lat) || isNaN(inp.lon)) { alert('請完整填寫出生日期、時間（或同一天內的時間區間）、時區與地點'); return; }
+    if (!inp || isNaN(inp.tz) || isNaN(inp.lat) || isNaN(inp.lon)) { alert('請完整填寫出生日期、時間（或選擇出生時辰）、時區與地點'); return; }
     const btn = $('#run');
     btn.disabled = true;
     const report = $('#report');

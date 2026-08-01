@@ -73,13 +73,28 @@
       <label><input type="radio" name="time-precision" value="range">出生時間不確定，以區間分析</label>
     </fieldset>
     <div class="time-range-panel hidden" id="time-range-panel" role="group" aria-labelledby="time-range-title">
-      <div><strong id="time-range-title">可能的出生時段</strong><p>系統會以區間中點產出完整報告，並每 5 分鐘比對一次時柱、命宮、上升與人類圖，將可能變動的結果獨立列出。</p></div>
+      <div><strong id="time-range-title">可能的出生時辰</strong><p>選一個傳統時辰，系統會以該時段中點產出完整報告，並每 5 分鐘比對一次時柱、命宮、上升與人類圖，將可能變動的結果獨立列出。</p></div>
       <div class="time-range-inputs">
-        <label for="time-start">開始時間<input id="time-start" type="time" value="08:00" step="60"></label>
-        <span aria-hidden="true">至</span>
-        <label for="time-end">結束時間<input id="time-end" type="time" value="10:00" step="60"></label>
+        <label for="time-branch">出生時辰
+          <select id="time-branch">
+            <option value="">請選擇時辰…</option>
+            <option value="0-59">子時（凌晨）00:00–01:00</option>
+            <option value="60-179">丑時 01:00–03:00</option>
+            <option value="180-299">寅時 03:00–05:00</option>
+            <option value="300-419">卯時 05:00–07:00</option>
+            <option value="420-539">辰時 07:00–09:00</option>
+            <option value="540-659">巳時 09:00–11:00</option>
+            <option value="660-779">午時 11:00–13:00</option>
+            <option value="780-899">未時 13:00–15:00</option>
+            <option value="900-1019">申時 15:00–17:00</option>
+            <option value="1020-1139">酉時 17:00–19:00</option>
+            <option value="1140-1259">戌時 19:00–21:00</option>
+            <option value="1260-1379">亥時 21:00–23:00</option>
+            <option value="1380-1439">子時（深夜）23:00–00:00</option>
+          </select>
+        </label>
       </div>
-      <p class="form-note">限同一天內的時段；不確定跨日或只知道早／午／晚時，請先選擇你最有把握的範圍。</p>
+      <p class="form-note">子時分兩段：凌晨 12 點到 1 點出生選「子時（凌晨）」，晚上 11 點後出生選「子時（深夜）」。只知道大概早／午／晚的話，選你最有把握的那個時辰。</p>
     </div>
     <div class="opts">
       <label><input type="radio" name="sex" value="male" checked>生理男</label>
