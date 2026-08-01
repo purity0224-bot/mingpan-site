@@ -56,7 +56,7 @@
       const [pn, stage, role] = PILLAR_STAGE[k];
       const g = B.stemGods[k];
       const stemLine = g === '日主'
-        ? `天干 ${B.pillars[k].stem} 就是「你本人」（日主，屬${B.dayMaster.elem}）`
+        ? `天干 ${B.pillars[k].stem} 就是「你本人」（日主，屬${B.dayMaster.elem}）——${STEM_PERSONA[B.pillars[k].stem] || ''}`
         : `天干透「${g}」——${TEN_GOD[g] || g}`;
       const hid = B.hidden[k].map((h) => `${h.stem}（${h.god}${TEN_GOD[h.god] ? '＝' + TEN_GOD[h.god].split('——')[0] : ''}）`).join('、');
       b += `<li><strong>${pn}｜${esc(stage)}</strong>——${esc(role)}。<br>檯面上：${esc(stemLine)}。<br>檯面下：地支 ${B.pillars[k].branch} 藏 ${esc(hid)}。<br><small>納音「${esc(B.pillars[k].nayinName)}」。</small></li>`;
@@ -488,13 +488,28 @@
     if (authority.includes('月亮')) return '月亮權威——重大決定等 28 天月循環走完：你是環境的取樣器，需要完整取樣週期';
     return '環境權威——換兩三個場域各待一陣子再決定：你的清明來自「對的地方」，場域錯了怎麼想都是霧';
   }
+  /* 十天干日主人設（2026-08-02 拆桶定稿：取代原五行 5 桶粗分） */
+  const STEM_PERSONA = {
+    甲: '像大樹——正直有主見、一心往上長，扛得起責任；代價是硬，不太會轉彎，撞牆時寧可斷也不想繞',
+    乙: '像藤蔓花草——柔韌、懂得借力，在夾縫裡也能長得好；代價是容易依附環境，久了會忘記自己也能當主幹',
+    丙: '像太陽——熱情外放、自帶舞台光，走到哪照亮到哪；代價是忽冷忽熱，燒太快容易後繼無力',
+    丁: '像燭火——溫暖細膩、照近不照遠，適合深度陪伴與專精一藝；代價是容易內耗，情緒都在心裡悶燒',
+    戊: '像高山——穩重可靠、說到做到，天生是別人的靠山；代價是固執，環境變動時你反應最慢',
+    己: '像田土——包容滋養、擅長成就別人，團隊有你才長得出東西；代價是界線模糊，常把別人的事扛成自己的',
+    庚: '像刀劍——果斷利落、重義氣講原則，亂局裡最能砍出一條路；代價是稜角傷人，話太直容易結怨',
+    辛: '像珠寶——精緻、自尊高、重質感品味，出手的東西都有水準；代價是心較脆，被批評會記很久',
+    壬: '像江海——聰明奔放、適應力強、點子滔滔不絕；代價是漂，目標容易換來換去定不下來',
+    癸: '像雨露——敏銳細膩、滲透力強，安靜地影響身邊的人；代價是想太多，容易陷在自己的情緒霧裡',
+  };
+
   function moonNeedPlain(sign) {
-    if (['巨蟹', '金牛', '雙魚'].includes(sign)) return '要的是穩定的照顧與歸屬感——對方「在不在」比浪漫重要；這份安全感長期得不到滿足，你會不自覺變得緊黏著對方，或反過來冷淡退縮';
-    if (['牡羊', '獅子', '射手'].includes(sign)) return '要的是被欣賞、同時保有自由——管太緊你會逃；這份欣賞長期得不到，你會不自覺改用挑釁或冷漠來表達不滿';
-    if (['雙子', '天秤', '水瓶'].includes(sign)) return '要的是聊得來、說話有人接——無話可說是你的分手前兆；這種交流長期得不到，你會忍不住往外尋找「聊得來的人」';
+    /* 12 星座逐一拆桶（表在 report.js 的 MOON_NEED，兩處共用）：這裡組 need＋react，感情總結用 need＋say */
+    const T = (typeof ML !== 'undefined' && ML.report && ML.report.MOON_NEED) || {};
+    const mn = T[sign];
+    if (mn) return `${mn.need}；${mn.react}`;
     return '要的是深度信任、能交換祕密——淺關係養不活你；長期得不到會整個人關機';
   }
 
-  ML.deep = { bazi: deepBazi, ziwei: deepZiwei, west: deepWest, vedic: deepVedic, hd: deepHD, num: deepNum, radarInsights, PALACE_PLAIN, reasonPlain, TAROT_KEY, DIM_DETAIL, TEN_GOD, ELEM_PERSON, authorityPlain, moonNeedPlain, LINE_MEAN };
+  ML.deep = { bazi: deepBazi, ziwei: deepZiwei, west: deepWest, vedic: deepVedic, hd: deepHD, num: deepNum, radarInsights, PALACE_PLAIN, reasonPlain, TAROT_KEY, DIM_DETAIL, TEN_GOD, ELEM_PERSON, STEM_PERSONA, authorityPlain, moonNeedPlain, LINE_MEAN };
   if (typeof module !== 'undefined' && module.exports) module.exports = ML;
 })(typeof window !== 'undefined' ? window : globalThis);

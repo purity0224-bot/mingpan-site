@@ -580,6 +580,22 @@
     '美感與藝術頻道': '對美的東西有反應，而且會想自己動手做',
   };
 
+  /* 月亮 12 星座感情需求（2026-08-02 拆桶定稿：need 需求／react 得不到的反應／say 開口建議） */
+  const MOON_NEED = {
+    牡羊: { need: '你要的是「被當第一順位」——愛要來得直接，慢熱和曖昧會讓你煩躁', react: '長期被冷處理，你會用吵架來確認對方在不在乎', say: '與其吵，不如直說「我需要你先找我」' },
+    金牛: { need: '你要的是穩定與身體感的踏實——牽手、吃飯、規律的陪伴勝過驚喜', react: '安全感長期不足，你會變得固執佔有', say: '開口要「固定的相處節奏」，比要承諾有用' },
+    雙子: { need: '你要的是「聊得來」——說話有人接、梗有人懂，無話可說是你的分手前兆', react: '這種交流長期得不到，你會忍不住往外尋找「聊得來的人」', say: '感覺疏遠時，先約一場只聊天的約會，比質問「你變了」有效' },
+    巨蟹: { need: '你要的是歸屬感——對方「在不在」比浪漫重要', react: '長期得不到，你會不自覺變得緊黏或鬧脾氣', say: '直接說「我需要你多報備」，比生悶氣讓對方猜有效' },
+    獅子: { need: '你要的是被欣賞、被驕傲地介紹給別人', react: '長期不被肯定，你會往外尋找掌聲', say: '告訴對方「多稱讚我一點，我吃這套」——這不丟臉，是說明書' },
+    處女: { need: '你要的是「被細心對待」——記得你說過的小事，勝過大禮', react: '失望累積時，你會用挑剔表達受傷', say: '試著把「你都不⋯」換成「我希望你⋯」' },
+    天秤: { need: '你要的是關係裡的公平與美感——不吵架不代表沒事', react: '委屈時你習慣先讓，讓久了會突然想逃', say: '練習在「還不嚴重」時就說出來' },
+    天蠍: { need: '你要的是深度信任——能交換祕密、全然交付', react: '被背叛的恐懼會讓你忍不住測試對方', say: '與其測試不如直接問，你其實承受得起真話' },
+    射手: { need: '你要的是被欣賞、同時保有自由——管太緊你會逃', react: '悶住的感覺累積久了，你會用「突然消失」處理', say: '先說「我需要自己的時間，不是不愛你」' },
+    摩羯: { need: '你要的是「值得長期投資的關係」——你用行動不用甜言', react: '對方若讀不懂你的付出，你會變得更沉默', say: '偶爾把做的事說出口，愛需要字幕' },
+    水瓶: { need: '你要的是「像朋友一樣的戀人」——先是同類，才是伴侶', react: '被要求交代行蹤，你會感到窒息想逃', say: '直接談好彼此的自由額度——你給得起承諾，只是討厭被查勤' },
+    雙魚: { need: '你要的是情緒被接住——「我懂你」三個字勝過解決方案', react: '長期沒人接，你會退到幻想裡或過度犧牲', say: '練習說「我不需要建議，只需要你聽」' },
+  };
+
   function synthesize(d) {
     const { bazi: B, west: W, vedic: V, hd: H, ziwei: Z, input } = d;
     const ps = probes(d);
@@ -638,7 +654,10 @@
       const charm = ps.find((p) => p.dim === '人群魅力與桃花');
       const spouse = pal('夫妻');
       const spouseStars = spouse.major.map((m) => m.star).join('、') || '空宮';
-      let text = `親密關係裡，卸下社交面具後真正的需求由「月亮${W.moon.sign}」接手——${['巨蟹', '金牛', '雙魚'].includes(W.moon.sign) ? '你要的是穩定的照顧和歸屬感' : ['牡羊', '獅子', '射手'].includes(W.moon.sign) ? '你要的是被欣賞同時保有自由' : ['雙子', '天秤', '水瓶'].includes(W.moon.sign) ? '你要的是聊得來、說話有人接' : '你要的是深度信任、能交換祕密'}，找對象先確認這一項。`;
+      const mn = MOON_NEED[W.moon.sign];
+      let text = mn
+        ? `親密關係裡，卸下社交面具後真正的需求由「月亮${W.moon.sign}」接手：${mn.need}。找對象先確認這一項；開口的訣竅：${mn.say}。`
+        : `親密關係裡，卸下社交面具後真正的需求由「月亮${W.moon.sign}」接手，找對象先確認這一項。`;
       if (charm && charm.n >= 3) text += '桃花是你的被動技能，問題從來不是「有沒有人」而是「怎麼篩」。';
       if (B.dayClash) text += '日支逢沖：關係易有「突然翻頁」的波動，重大承諾避開流年再沖的年份。';
       domains.push({ name: '感情', text, src: `西占月亮＋紫微夫妻宮（${spouseStars}）＋桃花探針` });
@@ -1152,6 +1171,6 @@
     return raw.join('\n') + '\n\n' + template;
   }
 
-  ML.report = { buildAll, probes, contradictions, timeline, dynamicLayers, hypotheses, strategies, headline, exportPrompt, starsOf, annualTable, planetReturns, synthesize, actionPlan, DIM_PLAIN, SKILL_CARDS, HD_ENTRY, ELEM_INDUSTRY };
+  ML.report = { buildAll, probes, contradictions, timeline, dynamicLayers, hypotheses, strategies, headline, exportPrompt, starsOf, annualTable, planetReturns, synthesize, actionPlan, DIM_PLAIN, SKILL_CARDS, HD_ENTRY, ELEM_INDUSTRY, MOON_NEED };
   if (typeof module !== 'undefined' && module.exports) module.exports = ML;
 })(typeof window !== 'undefined' ? window : globalThis);
