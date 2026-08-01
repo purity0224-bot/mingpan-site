@@ -622,7 +622,7 @@
     {
       const lead = ps.find((p) => p.dim === '領導與舞台');
       const guanScore = pal('官祿').score;
-      let text = guanScore >= 3 ? '事業宮位強，適合走「有名有位」的路線，往能被看見的位置移動。' : guanScore <= -1 ? '事業宮帶壓，建議成就感別全押在頭銜上——改用累積作品和專業實力，取代跟人搶職位。' : '事業宮中性，成就高低更多取決於你選的賽道是否用得上你的核心強項。';
+      let text = guanScore >= 3 ? `事業宮位強（強度 +${guanScore}，屬全盤前段），適合走「有名有位」的路線，往能被看見的位置移動。` : guanScore <= -1 ? `事業宮帶壓（強度 ${guanScore}），建議成就感別全押在頭銜上——改用累積作品和專業實力，取代跟人搶職位。` : '事業宮中性，成就高低更多取決於你選的賽道是否用得上你的核心強項。';
       if (lead && lead.n >= 3) text += '多套系統都指向領導力——別只做執行者，因為對你來說爭取主導權反而更輕鬆。';
       if (strong.some((p) => p.dim === '秩序、結構與控制')) text += '你的控制力適合拿來「建制度、設流程」，這是最不費力的專業資產。';
       domains.push({ name: '事業', text, src: `紫微官祿宮強度 ${guanScore}＋匯流探針` });
@@ -631,7 +631,7 @@
       const wealth = ps.find((p) => p.dim === '財務嗅覺與資源運籌');
       const caiScore = pal('財帛').score;
       let text = wealth && wealth.n >= 2 ? '你對錢有真實的嗅覺，可以主動經營投資與開源，但給嗅覺配一套「小額驗證再加碼」的紀律。' : '理財偏保守經營較穩：先固定儲蓄率，再談報酬率，別讓別人的機會感染你。';
-      text += caiScore >= 3 ? '財帛宮強，錢的事上你比自己以為的更有底氣。' : caiScore <= -1 ? '財帛宮帶煞忌，大額決定前設 48 小時冷靜期。' : '';
+      text += caiScore >= 3 ? `財帛宮強（強度 +${caiScore}），錢的事上你比自己以為的更有底氣。` : caiScore <= -1 ? `財帛宮帶煞忌（強度 ${caiScore}），大額決定前設 48 小時冷靜期。` : '';
       domains.push({ name: '財務', text, src: `紫微財帛宮強度 ${caiScore}＋財務探針 ${wealth ? wealth.stars : '★'}` });
     }
     {
@@ -653,7 +653,7 @@
     }
     {
       const study = ps.find((p) => p.dim === '研究、深度與洞察');
-      let text = study && study.n >= 2 ? '你適合深度學習路線：一段時間鑽一個主題，勝過同時淺嚐十個。把學習成果公開輸出（寫、講、教）會加倍固化。' : '你更適合「用中學」：先有具體任務再補知識，純上課容易半途而廢。';
+      let text = study && study.n >= 2 ? '你適合深度學習路線：一段時間鑽一個主題，勝過同時淺嚐十個。把學習成果公開輸出（寫、講、教）會加倍固化。' : '你更適合「邊做邊學」：先有具體任務再補知識，純上課容易半途而廢。';
       if (vs('Mercury').d9 >= 2) text += '水星在九分盤有力——中年後的學習力反而比年輕時好，別怕晚起步。';
       domains.push({ name: '學習成長', text, src: `研究探針 ${study ? study.stars : '★'}＋印占水星 D9` });
     }
@@ -693,7 +693,40 @@
       else horizons.long.push('往後的大運沒有「干支雙喜用」的十年——大環境屬平盤，成就更依賴選對賽道與紀律，而非等風來（依據：八字大運）');
     }
 
-    return { core, both, next3, windowNote, domains, horizons };
+    // 六、個人化提問：從最強訊號生成「最值得追問的三題」（讀者可帶去 LINE 直接問）
+    const qCandidates = [];
+    {
+      const guanQ = pal('官祿').score;
+      if (guanQ >= 3) qCandidates.push({ tag: '事業', q: `我的官祿宮是全盤強宮（強度 +${guanQ}），現在的工作有把這個優勢用滿嗎？往哪個方向調整最划算？` });
+      else if (guanQ <= -1) qCandidates.push({ tag: '事業', q: '我的事業宮帶壓，哪種「不搶頭銜、靠作品累積」的路線最適合我的盤？' });
+      if (B.dayClash) qCandidates.push({ tag: '感情', q: '我的日支逢沖、感情容易突然翻頁——最近幾年哪些年份要特別留意關係變動？' });
+      else qCandidates.push({ tag: '感情', q: `月亮${W.moon.sign}的我，在關係裡最需要的那件事，該怎麼開口跟對方要？` });
+      const goodYsQ = at10.rows.filter((r) => r.tone === 'good').map((r) => r.year);
+      if (goodYsQ.length) qCandidates.push({ tag: '時機', q: `${goodYsQ.slice(0, 2).join('、')} 是我的進攻年——想做的大事（換工作／創業／買房）該從何時開始佈局、第一步做什麼？` });
+      if (/情緒|直覺|自我投射/.test(H.authority)) qCandidates.push({ tag: '決策', q: `我是${H.authority}，手上正在猶豫的那個決定，照我的決策機制該怎麼走？` });
+      const DIM_Q = {
+        '行動力與衝勁': '多套系統指向我行動力強——怎麼設計煞車，避免衝太快翻車？',
+        '情感深度與感受力': '我的感受力是全盤強項——哪些工作或創作形式最能把它變成優勢？',
+        '秩序、結構與控制': '我的結構控制力強——但哪些事其實該放手不管？',
+        '表達與傳播': '多套系統指向我適合表達與傳播——該選寫、講還是教？從哪裡開始？',
+        '批判眼與完美主義': '我的挑錯眼很利——怎麼用在專業上，而不是消耗自己和身邊的人？',
+        '直覺與非線性認知': '我的直覺訊號強——哪些場合該信直覺、哪些場合該壓下來？',
+        '研究、深度與洞察': '我適合深度鑽研——現在該押哪個主題深挖三年？',
+        '美感與藝術頻道': '我的美感頻道強——該從哪件小作品開始累積？',
+        '財務嗅覺與資源運籌': '我對錢有嗅覺——適合主動投資還是經營副業？紀律線設在哪？',
+        '遷移、變動與自由': '我的盤帶變動能量——近兩年適合搬遷或轉換環境嗎？',
+        '領導與舞台': '多套系統指向領導力——我該在現在的環境爭主導權，還是換個舞台？',
+        '人群魅力與桃花': '我的人緣是被動技能——怎麼把它用在事業上而不只是社交？',
+      };
+      if (strong[0] && DIM_Q[strong[0].dim]) qCandidates.push({ tag: '天賦', q: DIM_Q[strong[0].dim] });
+    }
+    const questions = [];
+    for (const it of qCandidates) {
+      if (!questions.some((x) => x.tag === it.tag)) questions.push(it);
+      if (questions.length >= 3) break;
+    }
+
+    return { core, both, next3, windowNote, domains, horizons, questions };
   }
 
   /* ---------- 行動手冊（把每個結論接上「所以呢」） ---------- */

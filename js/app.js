@@ -400,6 +400,18 @@
 
   /* --- LINE 導流共用 --- */
   const LINE_URL = 'https://line.me/R/ti/p/@askfate';
+
+  /* 個人化提問卡：點一下複製問句 → 開 LINE */
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.ask-q');
+    if (!btn) return;
+    const q = btn.getAttribute('data-q') || '';
+    try { await navigator.clipboard.writeText(q); } catch { /* 剪貼簿被擋就仍開 LINE */ }
+    const tag = btn.querySelector('.ask-tag');
+    if (tag) tag.textContent = '已複製 ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { window.open(LINE_URL, '_blank', 'noopener'); }, 400);
+  });
   function ctaLine(text) {
     return `<p class="cta-inline"><a href="${LINE_URL}" target="_blank" rel="noopener">${text} →</a></p>`;
   }
@@ -447,6 +459,12 @@
     <div class="horizon"><span class="hz-tag">中期｜三～八年</span><ul>${s.horizons.mid.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>
     <div class="horizon"><span class="hz-tag">長期｜十年以上</span><ul>${s.horizons.long.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div></div>`;
     b += `<div class="summary-block"><h4>各領域建議</h4><ul>${s.domains.map((dm) => `<li><strong>${esc(dm.name)}</strong>｜${esc(dm.text)}<div class="chart-note">依據：${esc(dm.src)}</div></li>`).join('')}</ul></div>`;
+    if (s.questions && s.questions.length) {
+      b += `<div class="summary-block ask-block"><h4>🎯 你的盤最值得追問的三題</h4>
+      <p class="ask-hint">照你的盤面訊號生成、不是通用套題。點一題會自動複製，貼到 LINE 就能直接問：</p>
+      ${s.questions.map((qq) => `<button class="ask-q" type="button" data-q="${esc(qq.q)}"><span class="ask-tag">${esc(qq.tag)}</span><span class="ask-text">${esc(qq.q)}</span></button>`).join('')}
+      <p class="chart-note">點擊後會自動開啟 LINE（@askfate），貼上送出即可。</p></div>`;
+    }
     b += `<p class="chart-note">這一區是整份報告的摘要，每條結論都標了出處，細節和證據在後面各章。未來走勢是抓節奏用的粗篩，別當判決書。</p>`;
     return panel('sec-summary', '壹', '總結與建議', '六套系統交叉之後，指向最一致的結論都在這裡——先看這區就夠。', b + ctaLine('看完想針對你的狀況追問？LINE 最低 5 元/題深入問'));
   }

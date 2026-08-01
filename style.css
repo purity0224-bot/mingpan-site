@@ -917,3 +917,15 @@ details.panel[open] > summary .desc { margin-bottom: 16px; }
 .bd-alt .bd-tag { color: var(--gold); }
 .bd-alt:hover { border-color: var(--gold-deep); border-style: solid; box-shadow: 0 4px 14px rgba(181, 131, 37, .18); }
 .bd-go { display: inline-block; margin-top: 2px; font-size: .84rem; font-weight: 700; color: #8a6510; }
+
+/* 個人化提問卡（總結區） */
+.ask-block .ask-hint{font-size:14px;color:#6b6580;margin:2px 0 10px}
+.ask-q{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;box-sizing:border-box;
+  background:#FBFAFD;border:1.5px solid #DCD4EF;border-radius:12px;padding:12px 14px;margin:0 0 10px;
+  font-size:15px;line-height:1.6;color:#26222E;cursor:pointer;transition:border-color .15s,box-shadow .15s;font-family:inherit}
+.ask-q:hover{border-color:#6B5BC8;box-shadow:0 2px 10px rgba(107,91,200,.15)}
+.ask-q.copied{border-color:#2e9e5b;background:#f4fbf6}
+.ask-q .ask-tag{flex:none;background:#6B5BC8;color:#fff;font-size:12px;font-weight:700;
+  padding:3px 9px;border-radius:999px;letter-spacing:1px;white-space:nowrap;margin-top:2px}
+.ask-q.copied .ask-tag{background:#2e9e5b}
+.ask-q .ask-text{flex:1}
