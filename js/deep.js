@@ -40,7 +40,7 @@
     食傷: '輸出口窄：想法多但表達少，成果常被低估——刻意建立輸出管道是最划算的投資',
     財星: '對錢的驅力弱：動力來自興趣與意義，理財要靠制度、不能靠慾望',
     官殺: '不受框架管：自由度高，但在大組織裡的爬梯動力偏弱——選環境比忍環境重要',
-    印星: '靠實戰不靠學歷：吸收偏「用中學」，也較少倚賴他人庇蔭——自己的路自己鋪',
+    印星: '靠實戰不靠學歷：吸收知識偏好「邊做邊學」，也較少倚賴他人庇蔭——自己的路自己鋪',
   };
   const GROUP_TAG = { 比劫: '自我與同儕系', 食傷: '輸出與才華系', 財星: '目標與資源系', 官殺: '規範與壓力系', 印星: '學習與庇蔭系' };
   function deepBazi(d) {
@@ -61,7 +61,7 @@
       const hid = B.hidden[k].map((h) => `${h.stem}（${h.god}${TEN_GOD[h.god] ? '＝' + TEN_GOD[h.god].split('——')[0] : ''}）`).join('、');
       b += `<li><strong>${pn}｜${esc(stage)}</strong>——${esc(role)}。<br>檯面上：${esc(stemLine)}。<br>檯面下：地支 ${B.pillars[k].branch} 藏 ${esc(hid)}。<br><small>納音「${esc(B.pillars[k].nayinName)}」。</small></li>`;
     }
-    b += '</ul><p class="chart-note">看法：哪一柱出現的角色，就往那個年齡段與人事位（祖上／父母職場／自身婚姻／子女晚年）套讀。例如月柱見「正官」＝青年期與職場帶著規範與被期待的味道。</p>';
+    b += '</ul><p class="chart-note">看法：哪一柱出現的角色，就對應到那個年齡階段與人生領域（祖上／父母與職場／自身與婚姻／子女與晚年）來解讀。例如月柱見「正官」＝青年期與職場帶著規範與被期待的味道。</p>';
 
     const order = Object.entries(B.godScore).sort((a, x) => x[1] - a[1]);
     const [topG, topV] = order[0]; const [subG, subV] = order[1]; const [lowG, lowV] = order[4];
@@ -353,7 +353,7 @@
     const N = d.misc.numerology;
     const NM = ML.misc.NUM_MEANING;
     let b = `<h4>主命數 ${N.main} 的課題結構</h4>
-    <p><strong>${esc(NM[N.main] || '')}</strong>——靈數的讀法是「人生反覆出現的主題」，不是能力上限。${N.master ? `你的 ${N.master} 是卓越數：同一課題的高壓版——能量更大、震盪也更大，接得住就是天賦，接不住會先以「過敏」形式出現。` : ''}計算過程 ${N.steps.join('→')}，生日數 ${N.birthday}（${esc(N.birthdayMeaning || '')}）是日常性格的「面交版」。</p>`;
+    <p><strong>${esc(NM[N.main] || '')}</strong>——靈數的讀法是「人生反覆出現的主題」，不是能力上限。${N.master ? `你的 ${N.master} 是卓越數：同一課題的高壓版——能量更大、震盪也更大，接得住就是天賦，接不住會先以「過敏」形式出現。` : ''}計算過程 ${N.steps.join('→')}，生日數 ${N.birthday}（${esc(N.birthdayMeaning || '')}）是日常性格的「門面版」——別人平常最先接觸到的那一面。</p>`;
     const hi = Object.entries(N.freq).filter(([, v]) => v >= 3).map(([k, v]) => `${k}（${v} 次，${NM[k].split('・')[0]}）`);
     if (hi.length) b += `<h4>高頻數——生日裡重複出現的音</h4><p>${esc(hi.join('、'))}——出現三次以上的數字像「加倍鍵」：該主題在你身上濃度特別高，優點與副作用都會放大。</p>`;
     if (N.missing.length) {
@@ -386,7 +386,7 @@
     const elems = ['木', '火', '土', '金', '水'];
     const eS = elems.slice().sort((a, x) => B.elemPct[x] - B.elemPct[a]);
     const spread = B.elemPct[eS[0]] - B.elemPct[eS[4]];
-    const shape = spread >= 30 ? '高度集中（偏枯型）——性格輪廓極鮮明，代價是彈性小：擅長的碾壓、不擅長的躲不掉'
+    const shape = spread >= 30 ? '高度集中（偏枯型）——性格輪廓極鮮明，代價是彈性小：擅長的領域表現輾壓眾人，不擅長的領域卻也躲不掉'
       : spread >= 18 ? '有明顯主副（偏向型）——有清楚的性格主色，也保有一定調節空間'
       : '相對均衡（流通型）——五行都拿得出手，特徵是「沒有明顯短板」，但也因此常被說「看不透」';
     const bazi = `<div class="deep-insight"><strong>這張圖再深一層：</strong>你的五行分佈屬「${esc(shape)}」（最高最低差 ${spread.toFixed(0)} 個百分點）。
@@ -480,18 +480,18 @@
 
   /* ================= 出廠規格用的白話函式 ================= */
   function authorityPlain(authority) {
-    if (authority.includes('情緒')) return '情緒權威——你的清明不在當下：重大決定睡一晚，情緒的高點和低點都經歷過再答，當場答應的常後悔';
+    if (authority.includes('情緒')) return '情緒權威——當下的你看不清。建議重大決定先沉澱一晚，等情緒的高點和低點都經歷過一輪再回覆；因為當場答應的事，事後常會後悔';
     if (authority.includes('薦骨')) return '薦骨權威——把問題化成是非題問自己，聽第一秒身體的「嗯／唔」：身體不回應的事，再合理也是消耗';
-    if (authority.includes('直覺')) return '直覺權威——第一聲微弱的「不對勁」就是答案，它不會重播：事後用邏輯追認錯過的直覺，通常是災難的開始';
+    if (authority.includes('直覺')) return '直覺權威——第一聲微弱的「不對勁」就是答案，而且它不會重播。建議別在錯過警訊後才用道理說服自己沒事，因為那通常是災難的開始';
     if (authority.includes('意志')) return '意志權威——問自己「我真的想要嗎」，不是應不應該：意志力是脈衝式的，拿去撐別人的目標會過勞';
-    if (authority.includes('自我投射')) return '自我投射權威——找信任的人把想法完整說一遍：你是在「聽自己說話」的過程中知道答案的，悶著想想不出來';
+    if (authority.includes('自我投射')) return '自我投射權威——找信任的人把想法完整說一遍：你是在「聽自己說話」的過程中知道答案的，悶著自己想是想不出來的';
     if (authority.includes('月亮')) return '月亮權威——重大決定等 28 天月循環走完：你是環境的取樣器，需要完整取樣週期';
     return '環境權威——換兩三個場域各待一陣子再決定：你的清明來自「對的地方」，場域錯了怎麼想都是霧';
   }
   function moonNeedPlain(sign) {
-    if (['巨蟹', '金牛', '雙魚'].includes(sign)) return '要的是穩定的照顧與歸屬感——對方「在不在」比浪漫重要；長期得不到會用黏人或退縮表現';
-    if (['牡羊', '獅子', '射手'].includes(sign)) return '要的是被欣賞、同時保有自由——管太緊你會逃；長期得不到會用挑釁或冷漠表現';
-    if (['雙子', '天秤', '水瓶'].includes(sign)) return '要的是聊得來、說話有人接——無話可說是你的分手前兆；長期得不到會往外找「聊得來的人」';
+    if (['巨蟹', '金牛', '雙魚'].includes(sign)) return '要的是穩定的照顧與歸屬感——對方「在不在」比浪漫重要；這份安全感長期得不到滿足，你會不自覺變得緊黏著對方，或反過來冷淡退縮';
+    if (['牡羊', '獅子', '射手'].includes(sign)) return '要的是被欣賞、同時保有自由——管太緊你會逃；這份欣賞長期得不到，你會不自覺改用挑釁或冷漠來表達不滿';
+    if (['雙子', '天秤', '水瓶'].includes(sign)) return '要的是聊得來、說話有人接——無話可說是你的分手前兆；這種交流長期得不到，你會忍不住往外尋找「聊得來的人」';
     return '要的是深度信任、能交換祕密——淺關係養不活你；長期得不到會整個人關機';
   }
 

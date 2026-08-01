@@ -380,7 +380,7 @@
     const description = u.variable.length
       ? '請先以「保持一致」的項目閱讀報告；變動項目應視為多種可能，而非單一結論。'
       : '在本次檢視的時間敏感項目中，未發現變動；完整報告仍以區間中點為代表盤。';
-    return `<section class="panel time-confidence" id="sec-time-confidence"><h2>出生時間區間檢視</h2><p class="desc">你提供 ${formatTime(u.start)}–${formatTime(u.end)}；完整報告以中點 ${formatTime(u.midpoint)} 為代表盤，另以每 ${u.interval} 分鐘掃描 ${u.sampleCount} 個時間點。</p><div class="uncertainty-overview"><span class="uncertainty-seal">區間</span><p>${description}</p></div><div class="uncertainty-grid">${stable}${variable}</div><p class="form-note">此功能比對八字時柱、紫微命／身宮、西占上升／天頂與人類圖核心設定；它呈現時間敏感度，不會把區間分析視為精確出生時刻。</p></section>`;
+    return `<section class="panel time-confidence" id="sec-time-confidence"><h2>出生時間區間檢視</h2><p class="desc">你提供 ${formatTime(u.start)}–${formatTime(u.end)}；完整報告以中點 ${formatTime(u.midpoint)} 為代表盤，另以每 ${u.interval} 分鐘掃描 ${u.sampleCount} 個時間點。</p><div class="uncertainty-overview"><span class="uncertainty-seal">區間</span><p>${description}</p></div><div class="uncertainty-grid">${stable}${variable}</div><p class="form-note">此功能比對八字時柱、紫微命／身宮、西占上升／天頂與人類圖核心設定；它呈現的是「哪些結果對出生時間敏感」，不會把區間的中點當成你的精確出生時刻。</p></section>`;
   }
 
   function panel(id, no, title, desc, body, collapsed) {
@@ -411,7 +411,7 @@
     <p class="probe-plain">把<strong>完整盤面提示詞</strong>複製給任何 AI（ChatGPT、Claude、Gemini 都可以）。它包含你已精算好的全部盤面數據與分析方法論——AI 不必重新排盤、也不會亂編度數，直接站在這份報告的肩膀上往深處答。</p>
     <div class="ai-actions"><button class="ghost" id="copy-ai-btn">一鍵複製提示詞</button><span id="ai-copy-status" class="form-note"></span></div>
     <textarea id="ai-prompt-text" readonly rows="9" aria-label="AI 深度解讀提示詞">${esc(prompt)}</textarea>
-    <p class="chart-note">用法：複製 → 貼到 AI 對話框送出 → 接著問你想問的任何問題（感情、事業、某一年怎麼走……）。提示詞已內建「交叉不並列、禁止巴納姆空話、逐句標來源、區分本質與流年」等規則，回答品質會比直接丟一句「幫我算命」好非常多。</p>`;
+    <p class="chart-note">用法：複製 → 貼到 AI 對話框送出 → 接著問你想問的任何問題（感情、事業、某一年怎麼走……）。提示詞已內建「多系統交叉分析而非逐項並列、禁止巴納姆空話、逐句標來源、區分本質與流年」等規則，回答品質會比直接丟一句「幫我算命」好非常多。</p>`;
     return panel('sec-ai', '陸', 'AI 深度提問（進階 DIY）', '想自己拿盤面數據去問其他 AI 的進階玩家再點開；一般使用者直接用 LINE 深入問答最省事。', b, true);
   }
 
@@ -464,7 +464,7 @@
     '研究、深度與洞察': { 八字: '八字裡代表「吸收與鑽研」的印星旺', 西占: '星群聚在深度宮位或水星土星相扣——想得深', 人類圖: '人類圖帶深度迴路通道，能往一題鑽到底', 紫微: '紫微命宮坐軍師星（天機、天梁）或帶文昌文曲', 印占: '印度占星的智慧星（木星）有力', 靈數: '生命靈數是研究數' },
     '人群魅力與桃花': { 八字: '八字帶桃花星', 西占: '金星站在吸睛位（第 1／10 宮或天秤、金牛）', 人類圖: '人類圖帶魅力型通道', 紫微: '紫微命宮坐魅力星（貪狼、太陰、天同）或紅鸞天喜到位', 印占: '印度占星的金星有力', 靈數: '生命靈數是人緣數' },
     '遷移、變動與自由': { 八字: '八字帶驛馬星——傳統的「移動命」標記', 西占: '變動能量占比高或星聚遠行宮', 人類圖: '人類圖帶變動迴路通道', 紫微: '紫微遷移宮強或帶天馬星', 印占: '印度占星的變動軸（羅睺）落在遠行位', 靈數: '生命靈數是自由數' },
-    '批判眼與完美主義': { 八字: '八字「挑錯眼」（食傷）與「高標準」（官殺）並旺', 西占: '處女座配置或日月水被土星緊扣——自我要求緊', 人類圖: '人類圖帶批判閘門 18／58，天生看得到「哪裡不對」', 紫微: '紫微命宮坐糾察型的星（天相、巨門、天梁）', 印占: '印度占星的月亮落處女或水星土星並強', 靈數: '生命靈數是完美數' },
+    '批判眼與完美主義': { 八字: '八字「挑錯眼」（食傷）與「高標準」（官殺）並旺', 西占: '處女座配置強，或土星緊扣日月水星——對自己要求特別嚴格', 人類圖: '人類圖帶批判閘門 18／58，天生看得到「哪裡不對」', 紫微: '紫微命宮坐糾察型的星（天相、巨門、天梁）', 印占: '印度占星的月亮落處女或水星土星並強', 靈數: '生命靈數是完美數' },
     '美感與藝術頻道': { 八字: '八字表達星旺又帶桃花或華蓋（輸出＋美感的標記）', 西占: '金星落在美感星座或與海王星相扣', 人類圖: '人類圖帶創作型通道或藝術閘門', 紫微: '紫微命宮坐藝文星或帶文昌文曲', 印占: '印度占星的金星有力', 靈數: '生命靈數是美感數' },
   };
   function whyYou(c) {
@@ -522,7 +522,7 @@
     const r = dayRead(d, new Date(), '今天');
     return `<section class="panel today-card t-${r.tone}" id="sec-today"><h2>今日的你</h2>
       <p class="today-line">${r.icon}<strong>${r.dateStr}・${r.gz.name}日</strong>${esc(r.msg)}</p>
-      <p class="chart-note">依你的八字日支、年支與喜用五行，和「今天的干支」即時對照——每天都不一樣，明天再回來看 👋</p></section>`;
+      <p class="chart-note">拿你的八字日支、年支與喜用五行，跟「今天的干支」即時對照——每天都不一樣，明天再回來看 👋</p></section>`;
   }
   function renderTomorrow(d) {
     const r = dayRead(d, new Date(Date.now() + 86400000), '明天');
@@ -662,8 +662,8 @@
       b += `</div>`;
     }
     b += `<p class="chart-note">「適合／避免」清單由該年的燈號決定（同燈號原則相同），各年的個人化差異（太歲、化祿化忌落點、行星回歸）寫在備註列。</p>`;
-    b += `<p class="chart-note">本手冊全部由你的盤面規則式生成（喜用五行、人類圖類型與權威、宮位強度、流年表），不是通用模板；「產業方向」「方位」屬加成參考而非限制。時機類建議為粗篩參考，重大決策仍請綜合實際條件判斷。</p>`;
-    return panel('sec-action', '壹', '行動手冊', '你的強項怎麼用、各領域怎麼走——全部由你的盤面規則式生成。', b + ctaLine('感情、事業想問得更細？到 LINE 跟老師聊'));
+    b += `<p class="chart-note">本手冊全部照你的盤面、依固定規則生成（喜用五行、人類圖類型與權威、宮位強度、流年表），不是通用模板；「產業方向」「方位」屬加成參考而非限制。時機類建議為粗篩參考，重大決策仍請綜合實際條件判斷。</p>`;
+    return panel('sec-action', '壹', '行動手冊', '你的強項怎麼用、各領域怎麼走——全部照你的盤面、依固定規則生成。', b + ctaLine('感情、事業想問得更細？到 LINE 跟老師聊'));
   }
 
   /* --- 時間敏感度 --- */
@@ -714,7 +714,7 @@
       <li><strong>喜用神＝該補的五行（工作假設）</strong>：<strong>${B.favorable.join('、')}</strong>——行業、環境、作息往這些屬性靠，等於順著體質走${B.tiaohou ? `；另需調候「${B.tiaohou}」＝出生月份的氣候偏了，先調溫再談補` : ''}。</li>
       <li><strong>空亡＝訊號減弱區</strong>：${B.kong.join('')}${B.kongHits.length ? `——你的${B.kongHits.join('、')}支入空：該柱管的人事容易「形式上都在、感受上隔一層」` : '——四柱皆未入空，無此議題'}。</li>
       <li><strong>神煞＝傳統速記標籤</strong>：${B.shensha.map((s) => `<span class="chip" title="${esc(s.desc)}">${s.name}・${s.at}</span>`).join(' ') || '無'}<br><small>滑鼠停留可看單個解釋；逐個白話細講在本頁底部「深入解讀」。</small></li>
-      <li><strong>刑沖合害＝地支之間的化學反應</strong>：${B.relations.map((r) => `<span class="chip ${r.kind.includes('沖') || r.kind.includes('刑') || r.kind.includes('害') ? 'warn-chip' : 'ok-chip'}" title="${esc(r.note)}">${r.kind}・${esc(r.where)}</span>`).join(' ') || '<span class="chip">四支無明顯刑沖合害</span>'}<br><small>合（綠）＝黏合互助；沖（紅）＝對撞、該領域易動盪；刑／害（紅）＝隱性摩擦。${B.dayClash ? '<strong>你的日支逢沖</strong>——自身與婚姻位帶動盪體質。' : ''}</small></li>
+      <li><strong>刑沖合害＝地支之間的化學反應</strong>：${B.relations.map((r) => `<span class="chip ${r.kind.includes('沖') || r.kind.includes('刑') || r.kind.includes('害') ? 'warn-chip' : 'ok-chip'}" title="${esc(r.note)}">${r.kind}・${esc(r.where)}</span>`).join(' ') || '<span class="chip">四支無明顯刑沖合害</span>'}<br><small>合（綠）＝黏合互助；沖（紅）＝對撞、該領域易動盪；刑／害（紅）＝隱性摩擦。${B.dayClash ? '<strong>你的日支逢沖</strong>——代表自身與婚姻這兩個領域，天生比較容易起伏動盪。' : ''}</small></li>
       <li><strong>大運＝十年一換的人生大環境</strong>：${B.luck.steps.map((s) => `${s.gz.name}<small>(${Math.round(s.ageFrom)})</small>`).join('　')}<br><small>${B.luck.forward ? '順' : '逆'}行、${B.luck.startAgeYears} 歲起運；括號內＝該運開始的歲數。每步大運的順逆分析見「時間層」。</small></li>
     </ul>
     <p class="chart-note">${B.notes.map(esc).join('；')}</p>`;
@@ -795,10 +795,10 @@
     <li><strong>波符（所屬大主題）</strong>：${esc(my.wavespell)}——你的 Kin 座落在這條 13 天週期的大敘事裡。</li></ul>` : `<p>${esc(my.note)}</p>`}
     <p class="chart-note">Dreamspell 曆（非真實瑪雅長紀曆），錨點 2013-07-26＝Kin164，2/29 不賦 Kin。</p></div>
     <div><h3>八宅命卦 <span class="chip sys-misc">${M.gua.name}命</span></h3>
-    <p>你屬<strong>${M.gua.group}</strong>（五行屬${M.gua.elem}，以 ${M.effYear} 立春年計）。八宅法把人分「東四命／西四命」兩組，各有四個相生的吉方位：你的吉方軸在<strong>${esc(M.gua.dir)}</strong>系——實際用途是挑房、擺床、選座位時的傳統參考（床頭、書桌、主窗朝吉方）。屬詩性層趣味，別為此搬家。</p>
+    <p>你屬<strong>${M.gua.group}</strong>（五行屬${M.gua.elem}，以 ${M.effYear} 立春年計）。八宅法把人分「東四命／西四命」兩組，各有四個相生的吉方位：你的吉方軸在<strong>${esc(M.gua.dir)}</strong>系——實際用途是挑房、擺床、選座位時的傳統參考（床頭、書桌、主窗朝吉方）。當成傳統趣味參考就好，建議別為此搬家。</p>
     <h3>宿曜二十八宿 <span class="chip sys-misc">${esc(M.xiuyao.name)}</span></h3>
     <p>宿曜經以出生農曆日定「本命宿」，傳統用來看性格底色與人際相性（日本稱宿曜占星）。你的本命宿 <strong>${esc(M.xiuyao.name)}</strong>——${esc(M.xiuyao.key)}</p>
-    <p class="chart-note">宿曜經曆算法（27 宿制）；與印占月宿是兩套獨立月宿系統，指向相似時可當額外印證，不同時屬方法差異、非矛盾。</p></div>
+    <p class="chart-note">宿曜經曆算法（27 宿制）；與印占月宿是兩套獨立月宿系統，兩套指向相似時可互相印證；不一致時是方法差異，不是矛盾。</p></div>
     </div></details>`;
 
     // 每個系統的白話導讀（放各分頁最上方）
@@ -855,13 +855,13 @@
       <p class="chart-note">計分：日月升各2.0、水金火各1.5、木土各1.0、天海冥各0.5。</p></figure>`;
     b += `<figure class="chart"><figcaption>紫微｜十二宮強度</figcaption>${CH.radar(Z.palaces.map((p) => p.name), [{ values: Z.palaces.map((p) => p.score), color: CH.COLORS.ziwei }], { min: Math.min(-3, ...Z.palaces.map((p) => p.score)), labelSize: 11 })}
       ${DI.ziwei}
-      <p class="chart-note">計分：主星廟旺+2／陷−1、化祿+2權+1.5科+1忌−2、六吉各+1、六煞各−1。虛線＝0 分環，內側為負。</p></figure>`;
+      <p class="chart-note">計分：主星廟旺+2／陷−1、化祿+2、化權+1.5、化科+1、化忌−2、六吉各+1、六煞各−1。虛線＝0 分環，內側為負。</p></figure>`;
     b += `<figure class="chart"><figcaption>印占｜行星力量 D1／D9</figcaption>${CH.signedBars(V.strength.map((s) => ({ label: s.name, a: s.d1, aNote: s.d1Label, b: s.d9, bNote: s.d9Label })), { aName: 'D1 主盤', bName: 'D9 九分盤' })}
       ${DI.vedic}
       <p class="chart-note">計分：廟旺+2／友+1／中0／敵−1／陷−2，角宮再+1（僅 D1）。</p></figure>`;
     b += '</div>';
     b += DI.cross;
-    b += `<p class="chart-note">依區塊 G 規範：一系統一張圖、各用原生維度、禁止混軸；雷達是「佔比」不是「優劣」，多軸同高即多面性的數據呈現。更多跨系統交叉見「匯流與矛盾」。</p>`;
+    b += `<p class="chart-note">依區塊 G 規範：一系統一張圖、各用原生維度、禁止混軸；雷達是「佔比」不是「優劣」，多個軸同樣高，代表你本來就是多面向的人。更多跨系統交叉見「匯流與矛盾」。</p>`;
     return panel('sec-radar', '肆', '量化總覽', '各系統原生維度雷達（計分規則全部揭露，可覆核）。', b, true);
   }
 
@@ -907,7 +907,7 @@
     <div class="tbl-wrap"><table><thead><tr><th>情境</th><th>上場部件</th><th>表現樣貌（假說）</th></tr></thead><tbody>
     ${dl.L3.map((r) => `<tr><td><strong>${esc(r.scene)}</strong></td><td>${esc(r.parts)}</td><td>${esc(r.looks)}</td></tr>`).join('')}
     </tbody></table></div>
-    <p class="chart-note">此表回答「為什麼同一個人可以同時很理性又很感性」——不同部件在不同情境上場，或兩軸本來同高。每格標注來源部件，請當事人實際核對。</p></div>`;
+    <p class="chart-note">此表回答「為什麼同一個人可以同時很理性又很感性」——不同的性格部件會在不同情境上場，或者兩種特質本來就都強。每格標注來源部件，請當事人實際核對。</p></div>`;
     return `<details class="sub-chapter"><summary><h3>動靜分層（L0–L3）</h3><span class="axis">幫結論貼「保存期限」——分清恆定結構與流動狀態</span><span class="fold-hint">點開</span></summary>${b}</details>`;
   }
 

@@ -193,7 +193,7 @@
       if (st.gates.length) g += `<text x="${pos[i][0] + off}" y="${pos[i][1] + (i === 4 || i === 6 || i === 7 ? -32 : 46) + 13}" text-anchor="middle" font-size="9.5" fill="rgba(45,38,74,.55)">${st.gates.join(' ')}</text>`;
     });
     let html = `<svg viewBox="0 0 300 520" role="img" aria-label="人類圖九中心">${g}</svg>`;
-    html += `<p class="chart-note"><span class="lg" style="background:#7D6BE0"></span>實心＝有定義　<span class="lg" style="background:rgba(125,107,224,.3);border:1px dashed #7D6BE0"></span>虛框＝有閘門未成通道　<span class="lg" style="border:1px solid rgba(45,38,74,.4)"></span>空＝全開放（接收與放大他人）</p>`;
+    html += `<p class="chart-note"><span class="lg" style="background:#7D6BE0"></span>實心＝有定義　<span class="lg" style="background:rgba(125,107,224,.3);border:1px dashed #7D6BE0"></span>虛框＝有閘門未成通道　<span class="lg" style="border:1px solid rgba(45,38,74,.4)"></span>空＝全開放（容易接收並放大他人的能量）</p>`;
     return html;
   }
 
@@ -324,7 +324,7 @@ ${isFav ? `<rect x="${x - 4}" y="${baseY - h - 4}" width="${barW + 8}" height="$
 <text x="${x + colW / 2}" y="448" font-size="19" fill="rgba(255,255,255,.65)" text-anchor="middle" font-family="sans-serif">${hidden}</text>
 <text x="${x + colW / 2}" y="488" font-size="18" fill="rgba(255,255,255,.45)" text-anchor="middle" font-family="sans-serif">${p.nayinName}</text>`;
     });
-    const legend = `<text x="50" y="${CH2 - 24}" font-size="22" fill="rgba(255,255,255,.65)" font-family="sans-serif">喜用神：${B.favorable.join('、')}　｜　字色＝五行（綠木・紅火・棕土・金金・藍水）</text>`;
+    const legend = `<text x="50" y="${CH2 - 24}" font-size="22" fill="rgba(255,255,255,.65)" font-family="sans-serif">喜用神：${B.favorable.join('、')}　｜　字色＝五行（綠＝木、紅＝火、棕＝土、金＝金、藍＝水）</text>`;
     return cardWrap(`${CARD_BG}${cardTitle('八字四柱命式', `日主${B.dayMaster.stem}${B.dayMaster.elem}・${B.strength}・${B.pattern.name}`)}${body}${legend}${CARD_BRAND}`, '八字四柱命式');
   }
 
